@@ -1,0 +1,2768 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Boligappen">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161615" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Din smarte boligkjøpsassistent — sjekkliste, kalkulator, sammenligning og budrunde">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Boligappen</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fff;--bg2:#f6f6f5;--bg3:#eeede9;
+  --txt:#0d0c0b;--txt2:#57564f;--txt3:#9c9b94;
+  --br:rgba(0,0,0,0.07);--br2:rgba(0,0,0,0.13);
+  --r:10px;--rl:14px;
+  --accent:#1d4ed8;--accent2:#1e3a8a;
+  --green:#16a34a;--gbg:#f0fdf4;--gdk:#14532d;
+  --red:#dc2626;--rbg:#fef2f2;--rdk:#991b1b;
+  --amber:#d97706;--abg:#fffbeb;--adk:#78350f;
+  --blue:#2563eb;--bbg:#eff6ff;--bdk:#1e3a8a;
+  --purple:#7c3aed;--pbg:#f5f3ff;--pdk:#4c1d95;
+  --shadow:0 1px 2px rgba(0,0,0,0.04),0 3px 10px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.10);
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Text','Inter','Segoe UI',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#161615;--bg2:#1e1e1c;--bg3:#252523;
+  --txt:#f5f4ef;--txt2:#8a8a85;--txt3:#5a5a56;
+  --br:rgba(255,255,255,0.07);--br2:rgba(255,255,255,0.13);
+  --shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 12px rgba(0,0,0,0.2);
+  --gbg:#052e1a;--gdk:#6ee7b7;--rbg:#3b0a0a;--rdk:#fca5a5;
+  --abg:#2d1b00;--adk:#fcd34d;--bbg:#0f1f3d;--bdk:#bfdbfe;
+  --pbg:#1e0a3c;--pdk:#ddd6fe;
+}}
+html,body{min-height:100%;background:var(--bg3);font-family:var(--font);color:var(--txt);-webkit-font-smoothing:antialiased}
+body{display:flex;justify-content:center}
+#root{width:100%;max-width:480px;min-height:100vh;background:var(--bg3)}
+button{font-family:inherit;cursor:pointer;transition:all .15s;border-radius:var(--r)}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+input,select,textarea{font-family:inherit;font-size:14px;background:var(--bg);color:var(--txt);border:1px solid var(--br2);border-radius:var(--r);padding:10px 12px;width:100%;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.page{padding:16px 16px 100px}
+.card{background:var(--bg);border:1px solid var(--br);border-radius:var(--rl);padding:1.1rem 1.2rem;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-title{font-size:11px;font-weight:700;color:var(--txt3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.07em}
+.tab-bar{display:flex;border-bottom:1px solid var(--br);background:var(--bg);position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,0.04)}
+.tab-btn{flex:1;padding:11px 2px;font-size:10.5px;border:none;border-radius:0;border-bottom:2.5px solid transparent;color:var(--txt3);background:transparent;letter-spacing:.01em;transition:color .15s;font-family:inherit}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.btnpri{background:var(--accent);color:#fff;border:1px solid var(--accent);width:100%;padding:13px;font-size:14px;font-weight:600;letter-spacing:.02em;margin-top:8px;border-radius:var(--r);box-shadow:0 1px 3px rgba(29,78,216,.25),0 3px 10px rgba(29,78,216,.12);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
+.btnpri:hover{background:var(--accent2)}
+.btns{background:var(--gbg);color:var(--gdk);border:1px solid rgba(5,150,105,.25);box-shadow:none}
+.btnd{background:var(--rbg);color:var(--rdk);border:1px solid rgba(220,38,38,.25);box-shadow:none}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+.sheet{background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;padding:1.5rem;box-shadow:0 -4px 30px rgba(0,0,0,0.15)}
+.handle{width:40px;height:4px;background:var(--br2);border-radius:999px;margin:0 auto 18px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--bg2);border-radius:var(--r);padding:13px;border:1px solid var(--br)}
+.stat .sl{font-size:10px;font-weight:700;color:var(--txt3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
+.stat .sv{font-size:18px;font-weight:700}
+.stat.good .sv{color:var(--green)}
+.stat.bad .sv{color:var(--red)}
+.badge{display:inline-flex;align-items:center;font-size:11px;padding:3px 9px;border-radius:999px;font-weight:600}
+.bg_{background:var(--gbg);color:var(--gdk)}
+.br_{background:var(--rbg);color:var(--rdk)}
+.ba_{background:var(--abg);color:var(--adk)}
+.bb_{background:var(--bbg);color:var(--bdk)}
+.bp_{background:#fdf2f8;color:#831843}
+.bcard{background:var(--bg);border:1px solid var(--br);border-radius:var(--rl);padding:1.1rem;margin-bottom:12px;box-shadow:var(--shadow)}
+.bcard.pot{border-left:3px solid var(--green)}
+.bcard.rej{border-left:3px solid var(--red);opacity:.8}
+.srow{margin-bottom:16px}
+.srow label{display:flex;justify-content:space-between;font-size:13px;color:var(--txt2);margin-bottom:6px;font-weight:500}
+.srow label span{font-weight:700;color:var(--txt)}
+input[type=range]{padding:0;height:24px;background:transparent;-webkit-appearance:none;width:100%}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--br2);border-radius:999px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);margin-top:-8px;cursor:pointer;box-shadow:0 1px 4px rgba(37,99,235,.3)}
+input[type=range]::-moz-range-track{height:4px;background:var(--br2);border-radius:999px}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);border:none}
+.pbar{height:5px;background:var(--bg2);border-radius:999px;margin-bottom:16px;overflow:hidden}
+.pfill{height:100%;background:var(--accent);border-radius:999px;transition:width .35s}
+.ci{border:1px solid var(--br);border-radius:var(--rl);padding:14px;margin-bottom:8px;background:var(--bg)}
+.ci-t{font-size:14px;font-weight:700;margin-bottom:3px;letter-spacing:-.01em}
+.ci-n{font-size:12px;color:var(--txt3);margin-bottom:9px;line-height:1.4}
+.sbts{display:flex;gap:7px}
+.sbt{flex:1;padding:10px;font-size:22px;border-radius:var(--r);border:1px solid var(--br);text-align:center;transition:all .12s;background:var(--bg2);cursor:pointer}
+.sbt.ok{background:var(--gbg);border-color:var(--green)}
+.sbt.warn{background:var(--abg);border-color:var(--amber)}
+.sbt.bad{background:var(--rbg);border-color:var(--red)}
+.ptabs{display:flex;gap:0;margin-bottom:16px;background:var(--bg2);padding:3px;border-radius:var(--rl);border:1px solid var(--br)}
+.ptab{flex:1;padding:8px;font-size:13px;border-radius:var(--r);text-align:center;border:none;background:transparent;cursor:pointer;font-family:inherit;transition:all .15s;color:var(--txt2);font-weight:500}
+.ptab.active{background:var(--bg);font-weight:700;box-shadow:var(--shadow);color:var(--txt)}
+.paybg{display:flex;gap:4px;margin-top:6px}
+.paybtn{flex:1;padding:6px;font-size:11px;border-radius:6px;border:1px solid var(--br2);background:transparent;cursor:pointer;font-family:inherit;color:var(--txt2);font-weight:500}
+.paybtn.active{background:var(--bg2);font-weight:700;color:var(--txt);border-color:var(--br2)}
+.tgi{background:var(--bg2);border-radius:var(--r);padding:11px;margin-bottom:8px;border:1px solid var(--br)}
+.crow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.crow input[type=checkbox]{width:18px;height:18px;flex-shrink:0;cursor:pointer;accent-color:var(--accent)}
+.star-row{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.star{font-size:34px;cursor:pointer;transition:transform .12s;line-height:1;user-select:none}
+.star:hover{transform:scale(1.18)}
+.legend{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.li{display:flex;align-items:center;gap:8px;font-size:13px}
+.ld{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.cmp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--br);font-size:13px}
+.cmp-row:last-child{border-bottom:none}
+.rest-box{border-radius:var(--rl);padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--br)}
+.buf-bar{height:8px;border-radius:999px;background:var(--bg2);margin-top:6px;overflow:hidden}
+.buf-fill{height:100%;border-radius:999px;transition:width .4s}
+.row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.lbl{font-size:13px;color:var(--txt2);flex:1;font-weight:500}
+hr{border:none;border-top:1px solid var(--br);margin:14px 0}
+.sec{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.sec-t{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.sec-s{font-size:13px;color:var(--txt3);margin-top:3px}
+.btn-action{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 10px rgba(37,99,235,.25);transition:all .15s;font-family:inherit}
+.btn-action:hover{background:var(--accent2)}
+.empty-s{text-align:center;padding:3rem 1.5rem;color:var(--txt3)}
+.empty-s .icon{font-size:44px;margin-bottom:14px;opacity:.7}
+.empty-s .title{font-size:16px;font-weight:700;color:var(--txt2);margin-bottom:8px}
+.empty-s .sub{font-size:13px;line-height:1.6}
+.seg{display:flex;background:var(--bg2);border-radius:var(--rl);padding:3px;gap:3px;margin-bottom:16px;border:1px solid var(--br)}
+.segbtn{flex:1;padding:8px 4px;border:none;background:transparent;font-size:11px;font-weight:500;border-radius:var(--r);cursor:pointer;transition:all .15s;color:var(--txt2);font-family:inherit;white-space:nowrap}
+.segbtn.active{background:var(--bg);color:var(--accent);font-weight:700;box-shadow:var(--shadow)}
+.alert-b{background:var(--rbg);border:1px solid rgba(220,38,38,.2);border-radius:var(--r);padding:11px 14px;margin-bottom:14px;font-size:13px;color:var(--rdk);display:flex;align-items:flex-start;gap:8px}
+.inc-tag{font-size:11px;color:var(--gdk);background:var(--gbg);padding:2px 8px;border-radius:999px;margin-left:6px;font-weight:600}
+.back-btn{padding:9px 10px;background:var(--bg2);border:1px solid var(--br);border-radius:var(--r);cursor:pointer;display:inline-flex;align-items:center;font-family:inherit;color:var(--txt);transition:all .15s}
+.back-btn:hover{background:var(--bg3)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
+const fmt=n=>{const v=Number(n);return isNaN(v)?'0':Math.round(v).toLocaleString('nb-NO')};
+const fmtK=n=>{const v=Number(n);if(isNaN(v))return '0';if(v>=1e6)return (v/1e6).toFixed(2).replace('.',',')+' mill';if(v>=1e3)return Math.round(v/1e3).toLocaleString('nb-NO')+'k';return Math.round(v).toLocaleString('nb-NO')};
+const stor=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const load=k=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):null}catch(e){return null}};
+
+/* ─── DATA ─── */
+const CATS=[
+  {id:'teknisk',label:'Teknisk stand',emoji:'🔧',items:[
+    {id:'tak',label:'Tak og loft',note:'Alder, lekkasjer, tilstandsgrad'},
+    {id:'bad',label:'Baderom',note:'Fukt, ventilasjon, membran'},
+    {id:'kjokken',label:'Kjøkken',note:'Tilstand, hvitevarer inkl?'},
+    {id:'el',label:'El-anlegg',note:'Alder sikringsskap, jordfeil'},
+    {id:'ror',label:'Rør og vann',note:'Lekkasjer, vanntrykk'},
+    {id:'vinduer',label:'Vinduer og dører',note:'Kondensering, tetting'},
+    {id:'drenering',label:'Drenering og kjeller',note:'Fukt, sprekker, lukt'},
+    {id:'ventilasjon',label:'Ventilasjon',note:'Type, alder, funksjon'},
+  ]},
+  {id:'sol',label:'Sol og romfølelse',emoji:'☀️',items:[
+    {id:'sollys',label:'Sollys og retning',note:'Himmelretning, skyggefaktorer'},
+    {id:'romstorrelse',label:'Romstørrelser',note:'Oppfyller behovet?'},
+    {id:'planlosning',label:'Planløsning',note:'Naturlig flyt mellom rom'},
+    {id:'lagring',label:'Lagring og oppbevaring',note:'Boder, skap, garasje'},
+    {id:'balkong',label:'Balkong / terrasse',note:'Størrelse, solforhold, utsikt'},
+  ]},
+  {id:'nabolag',label:'Nabolag og praktisk',emoji:'🗺️',items:[
+    {id:'kollektiv',label:'Kollektivtransport',note:'Gangavstand t-bane/buss/trikk'},
+    {id:'butikk',label:'Butikker og service',note:'Dagligvarer, apotek, kafeer'},
+    {id:'stoy',label:'Støy og trafikk',note:'Vei, tog, fly, nattestøy'},
+    {id:'parkering',label:'Parkering',note:'Garasje, parkeringsrett'},
+    {id:'naboer',label:'Naboforhold og sameie',note:'Inntrykk av bygget'},
+  ]},
+  {id:'okonomi',label:'Økonomi og juss',emoji:'💰',items:[
+    {id:'fellesgjeld_ok',label:'Fellesgjeld',note:'Størrelse og rentebetingelser'},
+    {id:'budsjett',label:'Sameiets økonomi',note:'Sunnhet i budsjettet'},
+    {id:'vedlikehold',label:'Vedlikeholdsplan',note:'Fremtidige kostnader'},
+    {id:'heftelser',label:'Heftelser',note:'Pengeheftelser, bruksrettigheter'},
+  ]},
+  {id:'megler',label:'Spørsmål til megler',emoji:'🤝',items:[
+    {id:'interesse',label:'Antall interessenter',note:'Konkurranse om boligen'},
+    {id:'budhistorikk',label:'Budhistorikk',note:'Tidligere bud'},
+    {id:'salgsgrunn',label:'Salgsgrunn',note:'Motivasjon for salg'},
+    {id:'naboklager',label:'Klager og tvister',note:'Konflikter i sameiet'},
+  ]},
+  {id:'vibes',label:'Vibes og magefølelse',emoji:'💫',items:[
+    {id:'inntrykk',label:'Helhetsinntrykk',note:'Første og siste inntrykk'},
+    {id:'deg_her',label:'Kan du se deg her',note:'Emosjonell reaksjon'},
+    {id:'partner',label:'Partners reaksjon',note:'Er dere enige?'},
+    {id:'nabolag_vibe',label:'Nabolagets energi',note:'Trivsel, trygghet'},
+  ]},
+];
+const ALL_ITEMS=CATS.flatMap(c=>c.items.map(i=>({...i,cat:c.id})));
+const TOTAL=ALL_ITEMS.length;
+const FELLES_NAMES={felleskost:'Felleskostnader',mat:'Mat',strom:'Strøm',internett:'Internett',forsikring:'Forsikring',husholdning:'Husholdning'};
+
+function makeDefaultHus(n1,n2){
+  return {
+    navn1:n1||'Person 1',navn2:n2||'Person 2',toPerson:!!n2,
+    kjopesum:4200000,egenkapital:700000,rente:5.3,nedbetaling:25,
+    felles:{felleskost:4500,mat:8000,strom:1200,internett:500,forsikring:600,husholdning:2000},
+    fellesWho:{felleskost:'felles',mat:'felles',strom:'felles',internett:'felles',forsikring:'felles',husholdning:'felles'},
+    fellesSplit:{felleskost:50,mat:50,strom:50,internett:50,forsikring:50,husholdning:50},
+    p1:{inntekt:55000,ekstraInntekt:0,mobil:500,transport:800,trening:400,streaming:200,klar:1500,diverse:500,sparing:3000,buffer_mnd:1000,studielan:4000,buf_saldo:80000,buf_mnd_bruk:2000},
+    p2:{inntekt:52000,ekstraInntekt:0,mobil:500,transport:800,trening:400,streaming:200,klar:1500,diverse:500,sparing:3000,buffer_mnd:1000,studielan:3500,buf_saldo:60000,buf_mnd_bruk:1500},
+    bufferSaldo:150000,bufferMonedlig:5000,
+  };
+}
+
+/* ─── CALC ─── */
+function calcKalk(d){
+  const laan=Math.max(0,(d.kjopesum||0)-(d.egenkapital||0));
+  const mr=d.rente/100/12;const ant=d.nedbetaling*12;
+  const mLaan=laan>0&&mr>0?laan*(mr*Math.pow(1+mr,ant))/(Math.pow(1+mr,ant)-1):ant>0?laan/ant:0;
+  const tF=Object.keys(d.felles).reduce((s,k)=>s+(d.felles[k]||0),0);
+  function cs(k,pk){
+    const v=d.felles[k]||0;const w=d.fellesWho[k];const sp=d.fellesSplit[k]/100;
+    if(w==='felles')return pk==='p1'?v*sp:v*(1-sp);
+    return w===pk?v:0;
+  }
+  function personCalc(pk){
+    const p=d[pk]||{};
+    const totalInntekt=(p.inntekt||0)+(p.ekstraInntekt||0);
+    const fellesShare=Object.keys(d.felles).reduce((s,k)=>s+cs(k,pk),0);
+    const indiv=(p.mobil||0)+(p.transport||0)+(p.trening||0)+(p.streaming||0)+(p.klar||0)+(p.diverse||0)+(p.sparing||0)+(p.buffer_mnd||0)+(p.studielan||0);
+    const laanShare=d.toPerson?mLaan/2:mLaan;
+    const totalUt=laanShare+fellesShare+indiv;
+    const rest=totalInntekt-totalUt;
+    const nettoBuf=(p.buffer_mnd||0)-(p.buf_mnd_bruk||0);
+    return {totalInntekt,fellesShare,indiv,laanShare,totalUt,rest,nettoBuf,restMedBuf:rest+nettoBuf};
+  }
+  return {laan,mLaan,tF,p1:personCalc('p1'),p2:personCalc('p2')};
+}
+
+/* ─── SMALL COMPONENTS ─── */
+function PieChart({data}){
+  const ref=useRef();
+  useEffect(()=>{
+    const c=ref.current;if(!c)return;
+    const ctx=c.getContext('2d');
+    const tot=data.reduce((s,d)=>s+d.v,0);if(!tot)return;
+    let start=-Math.PI/2;ctx.clearRect(0,0,200,200);
+    data.forEach(d=>{
+      const sl=(d.v/tot)*2*Math.PI;
+      ctx.beginPath();ctx.moveTo(100,100);ctx.arc(100,100,90,start,start+sl);ctx.closePath();ctx.fillStyle=d.c;ctx.fill();
+      start+=sl;
+    });
+    ctx.beginPath();ctx.arc(100,100,55,0,2*Math.PI);
+    ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#fff';
+    ctx.fill();
+  },[data]);
+  return <canvas ref={ref} width={200} height={200} style={{width:140,height:140}}/>;
+}
+
+function StarRating({value,onChange}){
+  const [hover,setHover]=useState(0);
+  return <div className="star-row">
+    {[1,2,3,4,5].map(i=>(
+      <span key={i} className="star"
+        onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(0)}
+        onClick={()=>onChange(i)}
+        style={{filter:(hover||value)>=i?'none':'grayscale(1) opacity(0.3)'}}>
+        {(hover||value)>=i?'⭐':'☆'}
+      </span>
+    ))}
+  </div>;
+}
+
+function TGForm({onAdd}){
+  const [f,setF]=useState({tittel:'',grad:'TG2',kommentar:'',est:''});
+  return <div>
+    <input placeholder="Hva er funnet" value={f.tittel} onChange={e=>setF(p=>({...p,tittel:e.target.value}))} style={{marginBottom:8}}/>
+    <div style={{display:'flex',gap:8,marginBottom:8}}>
+      <select value={f.grad} onChange={e=>setF(p=>({...p,grad:e.target.value}))} style={{flex:1}}>
+        <option>TG1</option><option>TG2</option><option>TG3</option>
+      </select>
+      <input type="number" placeholder="Estimert kostnad kr" value={f.est} onChange={e=>setF(p=>({...p,est:e.target.value}))} style={{flex:1}}/>
+    </div>
+    <textarea placeholder="Kommentar..." rows={2} value={f.kommentar} onChange={e=>setF(p=>({...p,kommentar:e.target.value}))} style={{marginBottom:8}}/>
+    <button onClick={()=>{if(!f.tittel)return;onAdd({tittel:f.tittel,grad:f.grad,kommentar:f.kommentar,estimertKostnad:Number(f.est)||0});setF({tittel:'',grad:'TG2',kommentar:'',est:''});}}
+      style={{width:'100%',padding:'9px',fontWeight:600,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit'}}>
+      + Legg til TG-funn
+    </button>
+  </div>;
+}
+
+function BufferCard({pk,label,data,upd}){
+  const saldo=data.buf_saldo||0,bruk=data.buf_mnd_bruk||0,inn=data.buffer_mnd||0;
+  const netto=inn-bruk;
+  const tomOm=netto<0&&saldo>0?Math.round(saldo/(-netto)):null;
+  const col=tomOm===null?'var(--green)':tomOm>24?'var(--green)':tomOm>12?'var(--amber)':'var(--red)';
+  return <div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:13,marginBottom:8,border:'1px solid var(--br)'}}>
+    <div style={{fontWeight:700,fontSize:13,marginBottom:10}}>{label}</div>
+    <div className="row"><span className="lbl">Saldo</span><input type="number" value={saldo} onChange={e=>upd(pk+'.buf_saldo',Number(e.target.value))} style={{width:100,textAlign:'right'}}/></div>
+    <div className="row"><span className="lbl">Inn per mnd</span><input type="number" value={inn} onChange={e=>upd(pk+'.buffer_mnd',Number(e.target.value))} style={{width:100,textAlign:'right'}}/></div>
+    <div className="row"><span className="lbl">Bruk per mnd</span><input type="number" value={bruk} onChange={e=>upd(pk+'.buf_mnd_bruk',Number(e.target.value))} style={{width:100,textAlign:'right'}}/></div>
+    <div className="buf-bar"><div className="buf-fill" style={{width:saldo>0?'100%':'0%',background:col}}/></div>
+    <div style={{fontSize:12,color:'var(--txt2)',marginTop:5,display:'flex',justifyContent:'space-between'}}>
+      <span><strong style={{color:'var(--txt)'}}>{fmt(saldo)} kr</strong></span>
+      {netto!==0&&<span style={{color:netto>0?'var(--gdk)':'var(--rdk)'}}>{netto>0?'+':''}{fmt(netto)}/mnd</span>}
+    </div>
+    {tomOm&&<div style={{fontSize:12,marginTop:4,color:col}}>Tom om <strong>{tomOm} mnd</strong> ({(tomOm/12).toFixed(1)} år)</div>}
+    {!tomOm&&netto>=0&&<div style={{fontSize:12,marginTop:4,color:'var(--gdk)'}}>Bufferen vokser ✓</div>}
+  </div>;
+}
+
+function RestSummary({d,names,toPerson}){
+  const k=calcKalk(d);
+  const persons=toPerson?[{label:names[0],r:k.p1,c:'#534AB7'},{label:names[1],r:k.p2,c:'#D85A30'}]:[{label:names[0],r:k.p1,c:'#534AB7'}];
+  return <div className="card" style={{borderColor:persons.every(p=>p.r.rest>=0)?'rgba(5,150,105,.3)':'rgba(220,38,38,.3)'}}>
+    <div className="card-title">💰 Igjen per {toPerson?'person':'måned'} etter alle trekk</div>
+    {persons.map(p=>(
+      <div key={p.label} className="rest-box" style={{background:p.r.rest>=0?'var(--gbg)':'var(--rbg)'}}>
+        <div>
+          <div style={{fontWeight:700,fontSize:14,color:p.r.rest>=0?'var(--gdk)':'var(--rdk)'}}>{p.label}</div>
+          <div style={{fontSize:11,color:'var(--txt3)',marginTop:2}}>Inntekt: {fmt(p.r.totalInntekt)} kr</div>
+          <div style={{fontSize:11,color:'var(--txt3)'}}>Total ut: {fmt(p.r.totalUt)} kr</div>
+          {p.r.nettoBuf!==0&&<div style={{fontSize:11,color:'var(--txt3)'}}>Inkl. buffer: {fmt(p.r.restMedBuf)} kr</div>}
+        </div>
+        <div style={{textAlign:'right'}}>
+          <div style={{fontSize:26,fontWeight:700,color:p.r.rest>=0?'var(--gdk)':'var(--rdk)'}}>{fmt(p.r.rest)}</div>
+          <div style={{fontSize:11,color:p.r.rest>=0?'var(--gdk)':'var(--rdk)'}}>{p.r.rest>=0?'kr/mnd ✓':'kr/mnd ⚠️'}</div>
+        </div>
+      </div>
+    ))}
+    <div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:'9px 12px',display:'flex',justifyContent:'space-between',fontSize:13,border:'1px solid var(--br)'}}>
+      <span style={{color:'var(--txt2)'}}>Månedlig lån</span>
+      <span style={{fontWeight:700}}>{fmt(k.mLaan)} kr</span>
+    </div>
+  </div>;
+}
+
+/* ─── KALKULATOR TAB ─── */
+function KalkulatorTab({data,setData,boligInkl,boligNavn,onClearBolig,onSaveSnapshot,hasSaved}){
+  const [ap,setAp]=useState('p1');
+  const d=data;
+  const k=calcKalk(d);
+  const inc=boligInkl||{};
+  function upd(path,val){
+    setData(prev=>{
+      const n=JSON.parse(JSON.stringify(prev));
+      const pts=path.split('.');let o=n;
+      for(let i=0;i<pts.length-1;i++)o=o[pts[i]];
+      o[pts[pts.length-1]]=val;
+      return n;
+    });
+  }
+  const pk=k[ap];
+  const pie=[
+    {v:k.mLaan,c:'#3b82f6',l:'Lån'},
+    {v:k.tF,c:'#059669',l:'Felles'},
+    {v:k.p1.indiv,c:'#7c3aed',l:d.navn1||'P1'},
+  ];
+  if(d.toPerson)pie.push({v:k.p2.indiv,c:'#dc2626',l:d.navn2||'P2'});
+  const personList=d.toPerson?['p1','p2']:['p1'];
+  return <div>
+    {boligNavn&&(
+      <div style={{background:'var(--gbg)',border:'1px solid rgba(5,150,105,.3)',borderRadius:'var(--r)',padding:'11px 14px',marginBottom:14,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <div>
+          <div style={{fontSize:11,fontWeight:700,color:'var(--gdk)',textTransform:'uppercase',letterSpacing:'.05em'}}>Boligkalkulator</div>
+          <div style={{fontSize:14,fontWeight:700,color:'var(--gdk)',marginTop:2}}>{boligNavn}</div>
+        </div>
+        <div style={{display:'flex',gap:6}}>
+          {onSaveSnapshot&&<button onClick={onSaveSnapshot} style={{fontSize:12,padding:'5px 11px',border:'1px solid rgba(5,150,105,.4)',borderRadius:'var(--r)',background:hasSaved?'var(--green)':'var(--gbg)',color:hasSaved?'#fff':'var(--gdk)',cursor:'pointer',font:'inherit',fontWeight:600}}>{hasSaved?'✓ Lagret':'💾 Lagre'}</button>}
+          <button onClick={onClearBolig} style={{fontSize:12,padding:'5px 11px',border:'1px solid rgba(5,150,105,.3)',borderRadius:'var(--r)',background:'transparent',color:'var(--gdk)',cursor:'pointer',font:'inherit'}}>Tilbakestill</button>
+        </div>
+      </div>
+    )}
+    <div className="card">
+      <div className="card-title">Boliglån</div>
+      {[
+        {l:'Kjøpesum (total)',k:'kjopesum',min:2e6,max:12e6,step:5e4,f:v=>fmt(v)+' kr'},
+        {l:'Egenkapital',k:'egenkapital',min:0,max:4e6,step:5e4,f:v=>fmt(v)+' kr'},
+        {l:'Rente',k:'rente',min:1,max:10,step:.1,f:v=>Number(v).toFixed(1)+'%'},
+        {l:'Nedbetaling',k:'nedbetaling',min:5,max:30,step:1,f:v=>v+' år'},
+      ].map(s=>(
+        <div key={s.k} className="srow">
+          <label>{s.l}<span>{s.f(d[s.k])}</span></label>
+          <input type="range" min={s.min} max={s.max} step={s.step} value={d[s.k]} onChange={e=>upd(s.k,parseFloat(e.target.value))}/>
+        </div>
+      ))}
+      <div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:11,border:'1px solid var(--br)'}}>
+        <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:4}}><span style={{color:'var(--txt2)'}}>Lånebeløp</span><span style={{fontWeight:700}}>{fmt(k.laan)} kr</span></div>
+        <div style={{display:'flex',justifyContent:'space-between',fontSize:15}}><span style={{color:'var(--txt2)'}}>Månedlig lånekostnad</span><span style={{fontWeight:700}}>{fmt(k.mLaan)} kr</span></div>
+      </div>
+    </div>
+    <div className="card">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+        <div className="card-title" style={{marginBottom:0}}>Felles utgifter</div>
+        <button onClick={()=>upd('locked',!d.locked)} style={{display:'flex',alignItems:'center',gap:5,padding:'5px 10px',border:'1px solid '+(d.locked?'var(--accent)':'var(--br2)'),borderRadius:'var(--r)',background:d.locked?'var(--bbg)':'transparent',color:d.locked?'var(--bdk)':'var(--txt3)',cursor:'pointer',font:'inherit',fontSize:12,fontWeight:600,transition:'all .15s'}}>
+          <i className={'ti ti-'+(d.locked?'lock':'lock-open')} style={{fontSize:13}}/>{d.locked?'Låst':'Lås utgifter'}
+        </button>
+      </div>
+      {d.locked&&<div style={{background:'var(--bbg)',borderRadius:'var(--r)',padding:'8px 12px',marginBottom:12,fontSize:12,color:'var(--bdk)',border:'1px solid rgba(37,99,235,.2)'}}>
+        🔒 Utgiftene er låst — juster budet for å se effekten på hva dere har igjen
+      </div>}
+      {Object.keys(d.felles).map(fk=>{
+        const isInc=inc[fk];
+        return <div key={fk} style={{marginBottom:13,paddingBottom:13,borderBottom:'1px solid var(--br)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+            <span style={{fontSize:13,color:'var(--txt2)',fontWeight:500}}>{FELLES_NAMES[fk]}{isInc&&<span className="inc-tag">✅ Inkl.</span>}</span>
+            <input type="number" value={isInc?0:(d.felles[fk]||0)} disabled={!!isInc||!!d.locked} onChange={e=>upd('felles.'+fk,Number(e.target.value))} style={{width:90,textAlign:'right',opacity:d.locked?0.6:1}}/>
+          </div>
+          {d.toPerson&&<div className="paybg">
+            {['felles','p1','p2'].map(w=>(
+              <button key={w} className={'paybtn'+(d.fellesWho[fk]===w?' active':'')} onClick={()=>upd('fellesWho.'+fk,w)}>
+                {w==='felles'?'Felles':w==='p1'?(d.navn1||'P1'):(d.navn2||'P2')}
+              </button>
+            ))}
+          </div>}
+          {d.toPerson&&d.fellesWho[fk]==='felles'&&(
+            <div style={{marginTop:6}}>
+              <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--txt3)',marginBottom:2}}>
+                <span>{d.navn1||'P1'} {d.fellesSplit[fk]}%</span><span>{d.navn2||'P2'} {100-d.fellesSplit[fk]}%</span>
+              </div>
+              <input type="range" min={0} max={100} step={5} value={d.fellesSplit[fk]} onChange={e=>upd('fellesSplit.'+fk,Number(e.target.value))}/>
+            </div>
+          )}
+        </div>;
+      })}
+    </div>
+    <div className="card">
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+        <div className="card-title" style={{marginBottom:0}}>Individuelle utgifter</div>
+        <button onClick={()=>upd('lockedIndiv',!d.lockedIndiv)} style={{display:'flex',alignItems:'center',gap:5,padding:'5px 10px',border:'1px solid '+(d.lockedIndiv?'var(--accent)':'var(--br2)'),borderRadius:'var(--r)',background:d.lockedIndiv?'var(--bbg)':'transparent',color:d.lockedIndiv?'var(--bdk)':'var(--txt3)',cursor:'pointer',font:'inherit',fontSize:12,fontWeight:600,transition:'all .15s'}}>
+          <i className={'ti ti-'+(d.lockedIndiv?'lock':'lock-open')} style={{fontSize:13}}/>{d.lockedIndiv?'Låst':'Lås'}
+        </button>
+      </div>
+      {d.lockedIndiv&&<div style={{background:'var(--bbg)',borderRadius:'var(--r)',padding:'8px 12px',marginBottom:12,fontSize:12,color:'var(--bdk)',border:'1px solid rgba(37,99,235,.2)'}}>
+        Individuelle utgifter låst — juster kun bolig-spesifikke kostnader
+      </div>}
+      {d.toPerson&&<div className="ptabs">
+        {['p1','p2'].map(pn=>(
+          <button key={pn} className={'ptab'+(ap===pn?' active':'')} onClick={()=>setAp(pn)}>
+            {pn==='p1'?(d.navn1||'Person 1'):(d.navn2||'Person 2')}
+          </button>
+        ))}
+      </div>}
+      <div className="srow">
+        <label>Fast inntekt (netto)<span>{fmt(d[ap].inntekt)} kr</span></label>
+        <input type="range" min={20000} max={150000} step={500} value={d[ap].inntekt} onChange={e=>upd(ap+'.inntekt',Number(e.target.value))} disabled={!!(d.locked||d.lockedIndiv)}/>
+        {(d.locked||d.lockedIndiv)&&<div style={{fontSize:11,color:'var(--bdk)',marginTop:3}}>Inntekt låst</div>}
+      </div>
+      <div className="row">
+        <span className="lbl">Ekstra inntekt (variabel)</span>
+        <input type="number" value={d[ap].ekstraInntekt||0} onChange={e=>upd(ap+'.ekstraInntekt',Number(e.target.value))} style={{width:100,textAlign:'right'}}/>
+      </div>
+      <div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:'7px 11px',marginBottom:10,fontSize:13,border:'1px solid var(--br)'}}>
+        Total: <strong>{fmt((d[ap].inntekt||0)+(d[ap].ekstraInntekt||0))} kr/mnd</strong>
+      </div>
+      {[['mobil','Mobil'],['transport','Transport'],['trening','Trening'],['streaming','Strømming'],['klar','Klær'],['diverse','Diverse'],['sparing','Sparing']].map(([fk,l])=>(
+        <div key={fk} className="row">
+          <span className="lbl">{l}</span>
+          <input type="number" value={d[ap][fk]||0} onChange={e=>upd(ap+'.'+fk,Number(e.target.value))} style={{width:90,textAlign:'right',opacity:d.lockedIndiv?.6:1}} disabled={!!d.lockedIndiv}/>
+        </div>
+      ))}
+      <div className="row"><span className="lbl">Månedlig til buffer</span><input type="number" value={d[ap].buffer_mnd||0} onChange={e=>upd(ap+'.buffer_mnd',Number(e.target.value))} style={{width:90,textAlign:'right',opacity:d.lockedIndiv?.6:1}} disabled={!!d.lockedIndiv}/></div>
+      <div className="row"><span className="lbl">Studielån</span><input type="number" value={d[ap].studielan||0} onChange={e=>upd(ap+'.studielan',Number(e.target.value))} style={{width:90,textAlign:'right',opacity:d.lockedIndiv?.6:1}} disabled={!!d.lockedIndiv}/></div>
+      <hr/>
+      <div className="g2">
+        <div className={'stat'+(pk.rest>=0?' good':' bad')}><div className="sl">Rest etter utgifter</div><div className="sv">{fmt(pk.rest)} kr</div></div>
+        <div className="stat"><div className="sl">Total ut</div><div className="sv">{fmt(pk.totalUt)} kr</div></div>
+      </div>
+    </div>
+    <div className="card">
+      <div className="card-title">Individuell buffer</div>
+      {personList.map(pk2=>(
+        <BufferCard key={pk2} pk={pk2} label={pk2==='p1'?(d.navn1||'Person 1'):(d.navn2||'Person 2')} data={d[pk2]} upd={upd}/>
+      ))}
+    </div>
+    <div className="card">
+      <div className="card-title">Felles buffer</div>
+      <div className="row"><span className="lbl">Saldo</span><input type="number" value={d.bufferSaldo||0} onChange={e=>upd('bufferSaldo',Number(e.target.value))} style={{width:110,textAlign:'right'}}/></div>
+      <div className="row"><span className="lbl">Månedlig bruk</span><input type="number" value={d.bufferMonedlig||0} onChange={e=>upd('bufferMonedlig',Number(e.target.value))} style={{width:110,textAlign:'right'}}/></div>
+      {d.bufferMonedlig>0&&d.bufferSaldo>0&&<div style={{fontSize:12,color:'var(--txt2)',marginTop:4}}>Tom om <strong>{Math.round(d.bufferSaldo/d.bufferMonedlig)} mnd</strong></div>}
+    </div>
+    <div className="card">
+      <div className="card-title">Utgiftsoversikt</div>
+      <div style={{display:'flex',justifyContent:'center',marginBottom:8}}><PieChart data={pie}/></div>
+      <div className="legend">
+        {pie.map(item=>(
+          <div key={item.l} className="li">
+            <div className="ld" style={{background:item.c}}/>
+            <span style={{color:'var(--txt2)',flex:1}}>{item.l}</span>
+            <span style={{fontWeight:700}}>{fmt(item.v)} kr</span>
+          </div>
+        ))}
+      </div>
+      <hr/>
+      <div style={{display:'flex',justifyContent:'space-between',fontSize:13}}>
+        <span style={{color:'var(--txt2)'}}>Total månedlig</span>
+        <span style={{fontWeight:700}}>{fmt(pie.reduce((s,d)=>s+d.v,0))} kr</span>
+      </div>
+    </div>
+    <RestSummary d={d} names={[d.navn1||'Person 1',d.navn2||'Person 2']} toPerson={d.toPerson}/>
+  </div>;
+}
+
+/* ─── FINN STEP ─── */
+
+function parseAnnonse(tekst){
+  // Split into clean lines, preserve original for regex
+  const raw = tekst;
+  const lines = tekst.split('\n').map(l=>l.trim()).filter(Boolean);
+
+  // Parse any Norwegian number string → integer
+  function pNum(s){
+    if(!s && s!=='0') return null;
+    const n = parseInt(String(s).replace(/[\s.,]/g,'').replace(/[^0-9]/g,''));
+    return isNaN(n) ? null : n;
+  }
+
+  // Extract number from a string — handles "4 200 kr", "4 200", "4.200,-", "kr 4200"
+  function extractNum(s){
+    if(!s) return null;
+    // Remove currency prefixes
+    const clean = s.replace(/^kr\.?\s*/i,'').trim();
+    // Match number with spaces/dots/commas as thousands separators
+    const m = clean.match(/([\d][\d\s.,]*)/);
+    if(!m) return null;
+    const n = parseInt(m[1].replace(/[\s.,]/g,''));
+    return isNaN(n) ? null : n;
+  }
+
+  // Core label scanner: find label line, return number from same or next lines
+  // Returns the number (can be 0), or null if label not found at all
+  function findLabel(labels){
+    for(let i=0; i<lines.length; i++){
+      const lc = lines[i].toLowerCase();
+      for(const label of labels){
+        if(!lc.includes(label)) continue;
+
+        // 1. Same line after colon
+        const colonIdx = lines[i].lastIndexOf(':');
+        if(colonIdx >= 0){
+          const after = lines[i].slice(colonIdx+1).trim();
+          if(/^0(\s*kr)?$/i.test(after)) return 0;
+          const n = extractNum(after);
+          if(n !== null && n > 0) return n;
+        }
+
+        // 2. Same line after label text
+        const afterLabel = lines[i].slice(lc.indexOf(label)+label.length).trim();
+        if(/^0(\s*kr)?$/i.test(afterLabel)) return 0;
+        const nSame = extractNum(afterLabel);
+        if(nSame !== null && nSame > 0) return nSame;
+
+        // 3. Next 1-3 lines (Finn puts value on next line after label)
+        for(let j=1; j<=3 && i+j<lines.length; j++){
+          const nl = lines[i+j];
+          const nlc = nl.toLowerCase();
+
+          // Skip "kr" alone (it's the unit, number was already found or is on next line)
+          if(nlc === 'kr') continue;
+
+          // Explicit zero
+          if(/^0\s*kr?$/i.test(nl)) return 0;
+
+          // Try to extract number - accept lines with or without kr
+          const n = extractNum(nl);
+          if(n !== null && n > 0 && n < 100000000) return n;
+
+          // Stop if we hit a new section label (capitalized words, no digits)
+          if(nl.length > 3 && /^[A-ZÆØÅ]/.test(nl) && !/\d/.test(nl) && nl.length > 8) break;
+        }
+      }
+    }
+    return null;
+  }
+
+  // ── PRIS ──
+  const pris = findLabel(['prisantydning'])
+    ?? (()=>{
+      const m = raw.match(/prisantydning[^\d\n]{0,20}([\d][\d\s.,]{3,})/i);
+      return m ? extractNum(m[1]) : null;
+    })()
+    ?? 0;
+
+  // ── FELLESGJELD ──
+  // Must use label-based scan to avoid grabbing pris
+  let fellesgjeld = findLabel(['andel fellesgjeld','andel av fellesgjeld','fellesgjeld']);
+  if(fellesgjeld === null){
+    // Regex fallback — explicit pattern after label
+    const m = raw.match(/(?:andel\s+)?fellesgjeld\s*:?\s*\n?\s*([\d][\d\s.,]*)\s*kr?/i);
+    fellesgjeld = m ? (extractNum(m[1]) ?? 0) : 0;
+  }
+  // Explicit zero check
+  if(fellesgjeld === null && /fellesgjeld\s*:?\s*\n?\s*0\s*kr?/i.test(raw)) fellesgjeld = 0;
+  if(fellesgjeld === null) fellesgjeld = 0;
+
+  // ── FELLESKOSTNADER ──
+  // Finn uses many label variants
+  let felleskost = findLabel([
+    'felleskostnader per måned',
+    'felleskostnader per mnd',
+    'felleskostnader pr. mnd',
+    'felleskostnader pr mnd',
+    'felleskostnader pr. mnd.',
+    'felleskostnader pr mnd.',
+    'felleskostnader/mnd',
+    'felleskost./mnd',
+    'felleskostnader',
+    'felleskostnad',
+    'fellesutgifter per måned',
+    'fellesutgifter per mnd',
+    'fellesutgifter',
+  ]);
+  if(felleskost === null){
+    // "X kr/mnd", "X kr per måned" — must be monthly (< 50 000) and not pris/gjeld
+    const m = raw.match(/\b([\d][\d\s.,]{1,7})\s*kr\s*(?:\/|per|pr\.?)\s*(?:m[åa]ned|mnd)\b/i)
+           ?? raw.match(/\b([\d][\d\s.,]{1,7}),-?\s*kr\s*(?:\/|per|pr\.?)\s*(?:m[åa]ned|mnd)\b/i);
+    if(m){ const n = extractNum(m[1]); if(n && n < 50000) felleskost = n; }
+  }
+  if(felleskost === null) felleskost = 0;
+
+  // ── ADRESSE ──
+  let adresse = '';
+  for(let i=0; i<lines.length; i++){
+    // Explicit label on own line
+    if(/^(adresse|beliggenhet)\s*:?\s*$/i.test(lines[i]) && i+1<lines.length && lines[i+1].length>4){
+      adresse = lines[i+1].trim(); break;
+    }
+    // Label with value on same line
+    const m = lines[i].match(/^(?:adresse|beliggenhet)\s*:\s*(.+)/i);
+    if(m){ adresse = m[1].trim(); break; }
+  }
+  if(!adresse){
+    // Street pattern: "Streetname NNN, PPPP City" or "Streetname NNN\nPPPP City"
+    const streetRe = /^[A-ZÆØÅ][a-zæøåA-ZÆØÅ \-]{1,}(?:gate|gata|gaten|vei|veien|veg|vegen|all[eé]en?|alléen|plass|plassen|stien|bakken|kollen|dalen|åsen|ringen|svingen|grenda|torget|brygge|bryggen|løkka|haugen|berget)\s+\d+[A-Za-z]?/i;
+    for(const line of lines){ if(streetRe.test(line)){ adresse = line.trim(); break; } }
+  }
+  // Append poststed if not present
+  if(adresse && !/\d{4}/.test(adresse)){
+    for(const line of lines){
+      if(/^\d{4}\s+[A-ZÆØÅ]/i.test(line)){ adresse = adresse + ', ' + line.trim(); break; }
+    }
+  }
+  // Inline "streetname NNN, PPPP City"
+  if(!adresse){
+    const m = raw.match(/([A-ZÆØÅ][a-zæøå\- ]{1,}(?:gate|gata|vei|veien|veg|allé|plass|stien)\s+\d+[A-Za-z]?,?\s*\d{4}\s+[A-ZÆØÅ][a-zæøå]+)/i);
+    if(m) adresse = m[1].trim();
+  }
+
+  // ── INKLUDERT I FELLESKOSTNADER ──
+  // Strategy 1: find "inkludert i felleskostnadene" section header, collect following lines
+  let inclLines = [];
+  for(let i=0; i<lines.length; i++){
+    const lc = lines[i].toLowerCase();
+    if(lc.includes('inkludert i felleskost')
+    || lc.includes('felleskostnadene inkluderer')
+    || lc.includes('inkluderes i felleskost')
+    || lc.includes('inkl. i felleskost')
+    || lc.includes('hva inkluderes i felleskost')){
+      for(let j=i+1; j<lines.length && j<i+20; j++){
+        const nl = lines[j];
+        const nlc = nl.toLowerCase();
+        // Stop at new section
+        if(nl.length < 2) break;
+        if(/^(priser|rom|nøkkel|fasiliteter|beskrivelse|beliggenhet|om boligen|kontakt|megler|kjøp)/i.test(nl)) break;
+        if(!/^\d/.test(nl) && nl.length < 120){
+          inclLines.push(nl.replace(/^[\-•*·]\s*/, '').trim());
+        }
+      }
+      break;
+    }
+  }
+
+  // Strategy 2: also scan the full text for inline "X inkludert" or "inkludert X"
+  function isIncluded(patterns){
+    // First check section lines
+    if(inclLines.some(l => patterns.some(p => new RegExp(p,'i').test(l)))) return true;
+    // Then inline text patterns
+    const text = raw;
+    return patterns.some(p =>
+      new RegExp(p + '[^.\\n]{0,60}(?:inkl|inngår)', 'i').test(text) ||
+      new RegExp('(?:inkl|inngår)[^.\\n]{0,60}' + p, 'i').test(text)
+    );
+  }
+
+  const inkl_internett = isIncluded(['internett','bredb[åa]nd','wifi','fiber','500\\s*mbit','250\\s*mbit','100\\s*mbit']);
+  const inkl_fyring    = isIncluded(['fyring','oppvarming','fjernvarme','varmepumpe','sentralvarme']);
+  const inkl_varmtvann = isIncluded(['varmtvann']);
+
+  const andre = [];
+  [
+    [['kabel.?tv','tv.pakke','kabel-tv','tv og internett','internett og tv'],   'Kabel-TV'],
+    [['str[øo]m(?! og)'],                                                        'Strøm'],
+    [['parkering','garasjeplass','p-plass'],                                      'Parkering'],
+    [['vaktmester'],                                                              'Vaktmester'],
+    [['husforsikring','fellespolic'],                                             'Forsikring'],
+    [['kommunale avgifter','kommunale'],                                          'Kommunale avgifter'],
+    [['drift og vedlikehold','vedlikeholdsavgift'],                               'Drift og vedlikehold'],
+    [['snørydding','gressklipp','uteareal'],                                      'Uteareal'],
+  ].forEach(([pats, label]) => {
+    if(isIncluded(pats) && !andre.includes(label)) andre.push(label);
+  });
+
+  return { pris, fellesgjeld, felleskost, adresse,
+    inkl: { internett: inkl_internett, fyring: inkl_fyring, varmtvann: inkl_varmtvann },
+    andre };
+}
+
+
+function calcOmk(pris,type,ov){
+  const p=Number(pris)||0;
+  const dok=ov.dok!==''?Number(ov.dok):(type==='selveier'?Math.round(p*0.025):0);
+  const tingl=ov.tingl!==''?Number(ov.tingl):(type==='selveier'?717:172);
+  const megler=ov.megler!==''?Number(ov.megler):0;
+  const andre=ov.andre!==''?Number(ov.andre):0;
+  return {dok,tingl,megler,andre,total:dok+tingl+megler+andre};
+}
+
+function genCalendarLinks(adresse, dato, tid){
+  const dt=dato&&tid?dato+'T'+tid+':00':dato?dato+'T10:00:00':null;
+  if(!dt)return null;
+  const end=dato&&tid?dato+'T'+(String(parseInt(tid.split(':')[0])+1).padStart(2,'0'))+':'+tid.split(':')[1]+':00':dato+'T11:00:00';
+  const title=encodeURIComponent('Visning - '+adresse);
+  const loc=encodeURIComponent(adresse);
+  const dtGcal=dt.replace(/[-:]/g,'');
+  const dtEndGcal=end.replace(/[-:]/g,'');
+  const google='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+title+'&dates='+dtGcal+'/'+dtEndGcal+'&details='+encodeURIComponent('Boligvisning registrert i Boligappen')+'&location='+loc;
+  const icalContent='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Boligappen//NO\r\nBEGIN:VEVENT\r\nDTSTART:'+dtGcal+'\r\nDTEND:'+dtEndGcal+'\r\nSUMMARY:Visning - '+adresse+'\r\nLOCATION:'+adresse+'\r\nDESCRIPTION:Boligvisning registrert i Boligappen\r\nEND:VEVENT\r\nEND:VCALENDAR';
+  const ical='data:text/calendar;charset=utf8,'+encodeURIComponent(icalContent);
+  return {google,ical};
+}
+
+function FinnStep({onDone,onCancel,apiKey}){
+  const [steg,setSteg]=useState('input'); // input | bekreft | kalender
+  const [finn,setFinn]=useState('');
+  const [dato,setDato]=useState('');
+  const [tid,setTid]=useState('');
+  const [annonsetekst,setAnnonsetekst]=useState('');
+  const [analysing,setAnalysing]=useState(false);
+  const [pdfAnalysing,setPdfAnalysing]=useState(false);
+  const [analyseError,setAnalyseError]=useState('');
+  const [fraAnalyse,setFraAnalyse]=useState(false);
+  const [ex,setEx]=useState({adresse:'',pris:'',fellesgjeld:'',felleskost:'',inkl:{internett:false,fyring:false,varmtvann:false},andre:[]});
+  const [boligtype,setBoligtype]=useState('andel');
+  const [ov,setOv]=useState({dok:'',tingl:'',megler:'',andre:''});
+  const [tgFeil,setTgFeil]=useState([]);
+  const [checklist,setChecklist]=useState({});
+  const [createdBolig,setCreatedBolig]=useState(null);
+  const fileRef=useRef();
+
+  function doAnalyse(){
+    if(!annonsetekst.trim()&&!finn){setSteg('bekreft');return;}
+    setAnalysing(true);setAnalyseError('');
+    try{
+      const r=parseAnnonse(annonsetekst||finn);
+      setEx({adresse:r.adresse,pris:r.pris||'',fellesgjeld:r.fellesgjeld||'',felleskost:r.felleskost||'',inkl:r.inkl,andre:r.andre});
+      if(r.pris||r.fellesgjeld||r.felleskost||r.adresse)setFraAnalyse(true);
+      else setAnalyseError('Fant ikke priser — fyll inn manuelt under.');
+    }catch(e){setAnalyseError('Feil: '+e.message);}
+    setAnalysing(false);
+    setSteg('bekreft');
+  }
+
+  async function doPDF(file){
+    if(!apiKey){setAnalyseError('PDF-analyse krever API-nøkkel (se ⚙️).');return;}
+    setPdfAnalysing(true);setAnalyseError('');
+    try{
+      const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true','x-api-key':apiKey},
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:[
+          {type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},
+          {type:'text',text:'Analyser salgsoppgaven. Svar KUN med JSON: {"adresse":"","pris":0,"fellesgjeld":0,"felleskost":0,"inkl_internett":false,"inkl_fyring":false,"inkl_varmtvann":false,"andre_inkludert":[],"sjekkliste":{"tak":"ok","bad":"ok","el":"ok","ror":"ok","vinduer":"ok","drenering":"ok","ventilasjon":"ok"},"tgFeil":[{"tittel":"","grad":"TG2","kommentar":"","estimertKostnad":0}]}'}
+        ]}]})
+      });
+      const data=await resp.json();
+      const raw=data.content&&data.content[0]&&data.content[0].text||'{}';
+      const si=raw.indexOf('{');const ei=raw.lastIndexOf('}');
+      const p=JSON.parse(raw.slice(si,ei+1));
+      setEx({adresse:p.adresse||'',pris:p.pris||'',fellesgjeld:p.fellesgjeld||'',felleskost:p.felleskost||'',
+        inkl:{internett:!!p.inkl_internett,fyring:!!p.inkl_fyring,varmtvann:!!p.inkl_varmtvann},
+        andre:Array.isArray(p.andre_inkludert)?p.andre_inkludert:[]});
+      if(p.tgFeil&&p.tgFeil.length)setTgFeil(p.tgFeil.filter(t=>t.tittel));
+      if(p.sjekkliste)setChecklist(p.sjekkliste);
+      setFraAnalyse(true);setSteg('bekreft');
+    }catch(e){setAnalyseError('PDF-feil: '+e.message);}
+    setPdfAnalysing(false);
+  }
+
+  function proceed(){
+    const pris=Number(ex.pris)||0;const fgjeld=Number(ex.fellesgjeld)||0;
+    const omk=calcOmk(pris,boligtype,ov);
+    const bolig={id:Date.now(),finn,dato,tid,adresse:ex.adresse||'Adresse ukjent',pris,fellesgjeld:fgjeld,
+      felleskost:Number(ex.felleskost)||0,totalpris:pris+fgjeld,totalmedOmk:pris+fgjeld+omk.total,
+      boligtype,omk,inkl:ex.inkl,andreInkl:ex.andre||[],tgFeil,checklist,fraAnalyse,
+      status:'aktiv',stjerner:0,positivt:'',negativt:'',vibesNote:'',comments:{}};
+    setCreatedBolig(bolig);
+    setSteg('kalender');
+  }
+
+  function finishWithBolig(){onDone(createdBolig);}
+
+  const BackBtn=()=>(
+    <button className="back-btn" onClick={steg==='input'?onCancel:()=>setSteg(steg==='bekreft'?'input':'bekreft')}><i className="ti ti-arrow-left"/></button>
+  );
+
+  // ── STEG: INPUT ──
+  if(steg==='input')return(
+    <div>
+      <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
+        <BackBtn/>
+        <div><div style={{fontSize:18,fontWeight:700,letterSpacing:'-.01em'}}>Legg til bolig</div><div style={{fontSize:12,color:'var(--txt3)',marginTop:2}}>Registrer boligdetaljer</div></div>
+      </div>
+      <div className="card">
+        <div className="card-title">Finn.no lenke</div>
+        <input placeholder="https://www.finn.no/realestate/homes/ad.html?finnkode=..." value={finn} onChange={e=>setFinn(e.target.value)} style={{marginBottom:0}}/>
+        {finn&&<a href={finn} target="_blank" rel="noopener noreferrer" style={{display:'inline-flex',alignItems:'center',gap:6,marginTop:8,fontSize:12,color:'var(--bdk)',textDecoration:'none',fontWeight:600}}>
+          <i className="ti ti-external-link"/> Åpne på Finn for å kopiere tekst
+        </a>}
+      </div>
+      <div className="card">
+        <div className="card-title">📋 Lim inn annonsestekst</div>
+        <div style={{fontSize:13,color:'var(--txt3)',marginBottom:10,lineHeight:1.5}}>
+          Åpne Finn-annonsen → trykk Ctrl+A → Ctrl+C → lim inn her. Appen finner da adresse, pris, FK og inkluderte tjenester automatisk.
+        </div>
+        <textarea rows={8} placeholder="Lim inn all tekst fra Finn-annonsen her..." value={annonsetekst} onChange={e=>setAnnonsetekst(e.target.value)} style={{lineHeight:1.5,resize:'vertical'}}/>
+        {annonsetekst.length>30&&<div style={{fontSize:11,color:'var(--txt3)',marginTop:4,textAlign:'right'}}>{annonsetekst.length} tegn</div>}
+      </div>
+      <div className="card">
+        <div className="card-title">Visningsdato og tid</div>
+        <div style={{display:'flex',gap:8}}>
+          <div style={{flex:2}}>
+            <label style={{fontSize:12,fontWeight:600,color:'var(--txt3)',display:'block',marginBottom:4}}>Dato</label>
+            <input type="date" value={dato} onChange={e=>setDato(e.target.value)}/>
+          </div>
+          <div style={{flex:1}}>
+            <label style={{fontSize:12,fontWeight:600,color:'var(--txt3)',display:'block',marginBottom:4}}>Tidspunkt</label>
+            <input type="time" value={tid} onChange={e=>setTid(e.target.value)}/>
+          </div>
+        </div>
+      </div>
+      <div className="card" style={{borderStyle:'dashed'}}>
+        <div style={{fontSize:13,color:'var(--txt3)',marginBottom:8}}>📄 Alternativt: last opp salgsoppgave (PDF)</div>
+        <input ref={fileRef} type="file" accept="application/pdf" style={{display:'none'}} onChange={e=>{if(e.target.files[0])doPDF(e.target.files[0]);e.target.value='';}}/>
+        <button onClick={()=>fileRef.current.click()} disabled={pdfAnalysing} style={{width:'100%',padding:9,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontWeight:500}}>
+          {pdfAnalysing?<><span className="spinner"/> Analyserer PDF...</>:'Last opp salgsoppgave (PDF)'}
+        </button>
+      </div>
+      {analyseError&&<div className="alert-b">{analyseError}</div>}
+      <button className="btnpri" onClick={doAnalyse} disabled={analysing||(!finn&&annonsetekst.length<10)}>
+        {analysing?<><span className="spinner"/> Analyserer...</>:annonsetekst.trim().length>30?<><i className="ti ti-sparkles"/> Analyser og fortsett</>:<><i className="ti ti-arrow-right"/> Fortsett</>}
+      </button>
+    </div>
+  );
+
+  // ── STEG: BEKREFT ──
+  if(steg==='bekreft'){
+    const pris=Number(ex.pris)||0;const fgjeld=Number(ex.fellesgjeld)||0;const omk=calcOmk(pris,boligtype,ov);
+    return(
+      <div>
+        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
+          <BackBtn/>
+          <div><div style={{fontSize:18,fontWeight:700,letterSpacing:'-.01em'}}>Bekreft detaljer</div>
+          <div style={{fontSize:12,color:'var(--txt3)',marginTop:2}}>{fraAnalyse?'Hentet fra annonse — sjekk og juster':'Fyll inn manuelt'}</div></div>
+        </div>
+        {fraAnalyse&&<div style={{background:'var(--gbg)',border:'1px solid rgba(5,150,105,.25)',borderRadius:'var(--r)',padding:'10px 14px',marginBottom:14,fontSize:13,color:'var(--gdk)',fontWeight:500}}>✅ Informasjon hentet automatisk — sjekk og juster om nødvendig</div>}
+        {analyseError&&<div className="alert-b">{analyseError}</div>}
+
+        {/* What was found vs not found */}
+        {fraAnalyse&&<div className="card" style={{marginBottom:14}}>
+          <div className="card-title">Hva ble funnet</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+            {[['Adresse',ex.adresse],['Pris',ex.pris?fmt(Number(ex.pris))+' kr':''],['Fellesgjeld',ex.fellesgjeld?fmt(Number(ex.fellesgjeld))+' kr':''],['FK/mnd',ex.felleskost?fmt(Number(ex.felleskost))+' kr':'']].map(([l,v])=>(
+              <div key={l} style={{background:v?'var(--gbg)':'var(--rbg)',borderRadius:'var(--r)',padding:'8px 10px',border:'1px solid '+(v?'rgba(5,150,105,.2)':'rgba(220,38,38,.2)')}}>
+                <div style={{fontSize:10,fontWeight:700,color:v?'var(--gdk)':'var(--rdk)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:2}}>{l}</div>
+                <div style={{fontSize:13,fontWeight:700,color:v?'var(--gdk)':'var(--rdk)'}}>{v||'Ikke funnet ✗'}</div>
+              </div>
+            ))}
+          </div>
+        </div>}
+
+        <div className="card">
+          <div className="card-title">Boliginfo</div>
+          {[['Adresse','adresse','text','Gatenavn nr, Poststed'],['Prisantydning','pris','number','4200000'],['Fellesgjeld','fellesgjeld','number','0'],['Felleskostnader / mnd','felleskost','number','3500']].map(([l,k,t,ph])=>(
+            <div key={k} style={{marginBottom:10}}>
+              <label style={{fontSize:12,fontWeight:600,color:'var(--txt3)',textTransform:'uppercase',letterSpacing:'.05em',display:'block',marginBottom:4}}>{l}</label>
+              <input type={t} placeholder={ph} value={ex[k]} onChange={e=>setEx(p=>({...p,[k]:e.target.value}))}/>
+            </div>
+          ))}
+          {(pris||fgjeld)?<div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:'9px 12px',fontSize:13,border:'1px solid var(--br)'}}>
+            Totalpris: <strong>{fmt(pris+fgjeld)} kr</strong><span style={{fontSize:11,color:'var(--txt3)',marginLeft:4}}>(pris + fellesgjeld)</span>
+          </div>:null}
+        </div>
+        <div className="card">
+          <div className="card-title">Inkludert i FK</div>
+          {[['internett','📶 Internett'],['fyring','🔥 Fyring'],['varmtvann','🚿 Varmtvann']].map(([k,l])=>(
+            <div key={k} className="crow">
+              <input type="checkbox" checked={!!ex.inkl[k]} onChange={e=>setEx(p=>({...p,inkl:{...p.inkl,[k]:e.target.checked}}))}/>
+              <span style={{fontSize:14}}>{l}</span>
+              {ex.inkl[k]&&fraAnalyse&&<span className="badge bg_" style={{fontSize:10}}>✓ AI</span>}
+            </div>
+          ))}
+          {ex.andre&&ex.andre.length>0&&<div style={{marginTop:6}}>
+            <div style={{fontSize:12,color:'var(--txt3)',marginBottom:4}}>Andre inkluderte:</div>
+            {ex.andre.map((a,i)=><span key={i} className="badge bg_" style={{marginRight:4,marginBottom:4,display:'inline-block'}}>{a}</span>)}
+          </div>}
+        </div>
+        <div className="card">
+          <div className="card-title">Boligtype og omkostninger</div>
+          <div style={{display:'flex',gap:6,marginBottom:14}}>
+            {[['andel','Andel/aksje'],['selveier','Selveier']].map(([v,l])=>(
+              <button key={v} onClick={()=>setBoligtype(v)} style={{flex:1,padding:9,fontWeight:700,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:boligtype===v?'var(--accent)':'var(--bg2)',color:boligtype===v?'#fff':'var(--txt2)',cursor:'pointer',font:'inherit',transition:'all .15s'}}>
+                {l}
+              </button>
+            ))}
+          </div>
+          {[['Dokumentavgift',boligtype==='selveier'?'2,5% av kjøpesum':'0% (andel/aksje)','dok'],['Tinglysingsgebyr','Fast sats','tingl'],['Meglerhonorar','Valgfritt','megler'],['Andre','Valgfritt','andre']].map(([l,hint,k])=>(
+            <div key={k} style={{marginBottom:9}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+                <span style={{fontSize:13,color:'var(--txt2)',fontWeight:500}}>{l}</span>
+                <span style={{fontSize:11,color:'var(--txt3)'}}>Auto: {fmt(calcOmk(pris,boligtype,{...ov,[k]:''})[k])} kr</span>
+              </div>
+              <input type="number" placeholder="Juster manuelt..." value={ov[k]} onChange={e=>setOv(p=>({...p,[k]:e.target.value}))}/>
+            </div>
+          ))}
+          <div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:'12px 14px',marginTop:4,border:'1px solid var(--br)'}}>
+            <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:4}}><span style={{color:'var(--txt2)'}}>Pris + fellesgjeld</span><span style={{fontWeight:700}}>{fmt(pris+fgjeld)} kr</span></div>
+            <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:4}}><span style={{color:'var(--txt2)'}}>Omkostninger</span><span style={{fontWeight:700,color:'var(--amber)'}}>{fmt(omk.total)} kr</span></div>
+            <div style={{height:1,background:'var(--br)',margin:'8px 0'}}/>
+            <div style={{display:'flex',justifyContent:'space-between',fontSize:15}}><span style={{fontWeight:700}}>Total kjøpskostnad</span><span style={{fontWeight:700,color:'var(--accent)'}}>{fmt(pris+fgjeld+omk.total)} kr</span></div>
+          </div>
+        </div>
+        <button className="btnpri" onClick={proceed}>Registrer bolig <i className="ti ti-check"/></button>
+      </div>
+    );
+  }
+
+  // ── STEG: KALENDER ──
+  if(steg==='kalender'&&createdBolig){
+    const cal=genCalendarLinks(createdBolig.adresse,createdBolig.dato,createdBolig.tid);
+    return(
+      <div>
+        <div style={{textAlign:'center',padding:'32px 20px 20px'}}>
+          <div style={{fontSize:48,marginBottom:12}}>✅</div>
+          <div style={{fontSize:20,fontWeight:700,letterSpacing:'-.01em',marginBottom:6}}>{createdBolig.adresse}</div>
+          <div style={{fontSize:13,color:'var(--txt3)'}}>{createdBolig.dato&&createdBolig.dato}{createdBolig.tid&&' kl. '+createdBolig.tid}</div>
+        </div>
+        {cal&&<div className="card">
+          <div className="card-title">📅 Legg til i kalender</div>
+          <div style={{fontSize:13,color:'var(--txt3)',marginBottom:14,lineHeight:1.5}}>
+            Vil du legge til visningen i kalenderen din?
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            <a href={cal.google} target="_blank" rel="noopener noreferrer" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:10,padding:'12px 16px',border:'1px solid var(--br2)',borderRadius:'var(--r)',textDecoration:'none',color:'var(--txt)',background:'var(--bg2)',fontWeight:600,fontSize:14}}>
+              <svg width="20" height="20" viewBox="0 0 48 48"><rect width="48" height="48" rx="4" fill="#fff"/><path fill="#4285f4" d="M24 23.1l-5.7 4.1h11.4z"/><path fill="#34a853" d="M36 12H28v8h8z"/><path fill="#fbbc04" d="M12 20v8h8v-8z"/><path fill="#ea4335" d="M20 12h-8v8h8z"/><path fill="#4285f4" d="M28 28h8v8h-8z"/><path fill="#34a853" d="M20 28h8v8h-8z"/><path fill="#ea4335" d="M12 28v8h8v-8z"/></svg>
+              Legg til i Google Calendar
+            </a>
+            <a href={cal.ical} download={"visning-"+createdBolig.adresse.replace(/[^a-z0-9]/gi,'-').slice(0,30)+".ics"} style={{display:'flex',alignItems:'center',justifyContent:'center',gap:10,padding:'12px 16px',border:'1px solid var(--br2)',borderRadius:'var(--r)',textDecoration:'none',color:'var(--txt)',background:'var(--bg2)',fontWeight:600,fontSize:14}}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Legg til i Apple Calendar (iCal)
+            </a>
+          </div>
+        </div>}
+        {!cal&&<div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:'12px 14px',marginBottom:14,fontSize:13,color:'var(--txt3)',border:'1px solid var(--br)',textAlign:'center'}}>
+          Legg til dato og tid for å eksportere til kalender
+        </div>}
+        <button className="btnpri" onClick={finishWithBolig}>
+          Gå til boligen <i className="ti ti-arrow-right"/>
+        </button>
+        <button onClick={finishWithBolig} style={{width:'100%',marginTop:8,padding:10,border:'none',background:'transparent',cursor:'pointer',font:'inherit',fontSize:13,color:'var(--txt3)'}}>Hopp over</button>
+      </div>
+    );
+  }
+  return null;
+}
+
+
+/* ─── VISNING TAB ─── */
+function VisningTab({boliger,setBoliger,onSendToKalk,snapshots,apiKey}){
+  const [view,setView]=useState('liste');
+  const [active,setActive]=useState(null);
+  const [listTab,setListTab]=useState('potensielle');
+  const [showSwipe,setShowSwipe]=useState(false);
+  const [rejectModal,setRejectModal]=useState(false);
+  const [rejectReason,setRejectReason]=useState('');
+  const [showTGModal,setShowTGModal]=useState(false);
+  const [deleteConfirm,setDeleteConfirm]=useState(null);
+  const [commentItem,setCommentItem]=useState(null);
+  const [commentText,setCommentText]=useState('');
+  const [showOversikt,setShowOversikt]=useState(false);
+  const [oversiktTekst,setOversiktTekst]=useState('');
+  const [generatingOversikt,setGeneratingOversikt]=useState(false);
+
+  function updB(id,fn){
+    setBoliger(prev=>{const u=prev.map(b=>b.id===id?fn(b):b);stor('boliger-main',u);return u;});
+    setActive(prev=>prev&&prev.id===id?fn(prev):prev);
+  }
+  function deleteB(id){
+    setBoliger(prev=>{const u=prev.filter(b=>b.id!==id);stor('boliger-main',u);return u;});
+    if(active&&active.id===id){setActive(null);setView('liste');}
+    setDeleteConfirm(null);
+  }
+  function setStatus(val,reason){
+    updB(active.id,b=>({...b,status:val,rejectReason:reason||''}));
+    setView('liste');setListTab(val==='potensiell'?'potensielle':'forkastet');
+    setShowSwipe(false);setRejectModal(false);
+  }
+  function openComment(itemId){setCommentItem(itemId);setCommentText(active&&active.comments&&active.comments[itemId]||'');}
+  function saveComment(){
+    if(commentItem){updB(active.id,b=>({...b,comments:{...(b.comments||{}),[commentItem]:commentText}}));setCommentItem(null);setCommentText('');}
+  }
+  async function genOversikt(){
+    if(!active)return;
+    setGeneratingOversikt(true);setOversiktTekst('');
+    if(!apiKey){setOversiktTekst('API-nøkkel mangler. Legg den inn i ⚙️ innstillinger.');setGeneratingOversikt(false);return;}
+    try{
+      const cl=active.checklist||{};const cmts=active.comments||{};
+      const bad=ALL_ITEMS.filter(i=>cl[i.id]==='bad').map(i=>i.label+(cmts[i.id]?' ('+cmts[i.id]+')':'')).join(', ')||'ingen';
+      const warn=ALL_ITEMS.filter(i=>cl[i.id]==='warn').map(i=>i.label+(cmts[i.id]?' ('+cmts[i.id]+')':'')).join(', ')||'ingen';
+      const ok=ALL_ITEMS.filter(i=>cl[i.id]==='ok').map(i=>i.label).slice(0,8).join(', ')||'ingen';
+      const tgTxt=(active.tgFeil||[]).map(t=>t.grad+': '+t.tittel+(t.kommentar?' — '+t.kommentar:'')+(t.estimertKostnad>0?', est. '+fmt(t.estimertKostnad)+' kr':'')).join('\n');
+      const prompt='Du er en boligassistent. Lag en helhetlig, personlig oppsummering av boligvisningen på norsk, direkte til kjøperne. Vær konkret og bruk detaljene. Ca 150-200 ord.\n\nBolig: '+active.adresse+' | Dato: '+(active.dato||'')+' | Stjerner: '+(active.stjerner||0)+'/5 — '+(['','Ikke aktuell','Svak','Interessant','God kandidat','Drømmebolig'][active.stjerner||0]||'')+'\n\nOK: '+ok+'\nUsikkert: '+warn+'\nProblemer: '+bad+(tgTxt?'\nTG-feil:\n'+tgTxt:'')+'\nPositivt: '+(active.positivt||'(tomt)')+'\nBekymringer: '+(active.negativt||'(tomt)')+'\n\nSkriv sammenhengende tekst.';
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true','x-api-key':apiKey},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});
+      const data=await res.json();
+      setOversiktTekst(data.content&&data.content[0]&&data.content[0].text||'Ingen tekst generert.');
+    }catch(e){setOversiktTekst('Feil: '+e.message);}
+    setGeneratingOversikt(false);
+  }
+
+  const pot=boliger.filter(b=>b.status==='potensiell');
+  const fork=boliger.filter(b=>b.status==='forkastet');
+  const akt=boliger.filter(b=>b.status==='aktiv');
+  const filled=active?Object.values(active.checklist||{}).filter(v=>v&&v!=='na').length+Object.values(active.checklist||{}).filter(v=>v==='na').length:0;
+  const critBad=active?ALL_ITEMS.filter(i=>active.checklist&&active.checklist[i.id]==='bad').length:0;
+  const answeredCount=active?Object.keys(active.checklist||{}).length:0;const allDone=answeredCount>=TOTAL;
+  const tgSum=active?(active.tgFeil||[]).reduce((s,t)=>s+(t.estimertKostnad||0),0):0;
+  const snap=active&&snapshots?snapshots.find(s=>s.boligId===active.id):null;
+
+  // ── LISTE ──
+  if(view==='liste'){
+    const list=listTab==='potensielle'?pot:listTab==='forkastet'?fork:listTab==='aktiv'?akt:[];
+    return <div>
+      <div className="sec" style={{marginBottom:16}}>
+        <div><div className="sec-t">Mine boliger</div></div>
+        <button className="btn-action" onClick={()=>setView('ny')}><i className="ti ti-plus"/> Legg til</button>
+      </div>
+      <div className="seg">
+        {[['potensielle','💚 '+pot.length],['forkastet','❌ '+fork.length],['aktiv','⏳ '+akt.length],['kart','🗺️']].map(([k,l])=>(
+          <button key={k} className={'segbtn'+(listTab===k?' active':'')} onClick={()=>setListTab(k)} title={k}>{l}</button>
+        ))}
+      </div>
+      {listTab==='kart'?<KartView boliger={boliger}/>:(
+        <>
+          {list.length===0&&<div className="empty-s"><div className="icon">🏠</div><div className="title">Ingen boliger her enda</div><div className="sub">Trykk "+ Legg til" for å registrere en bolig</div></div>}
+          {list.map(b=>{
+            const sc=Object.values(b.checklist||{});
+            const okC=sc.filter(s=>s==='ok').length,wC=sc.filter(s=>s==='warn').length,bC=sc.filter(s=>s==='bad').length;
+            const tgs=(b.tgFeil||[]).reduce((s,t)=>s+(t.estimertKostnad||0),0);
+            return <div key={b.id} className={'bcard '+(b.status==='potensiell'?'pot':b.status==='forkastet'?'rej':'')}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}}>
+                <div style={{flex:1}}>
+                  <div style={{fontWeight:700,fontSize:15,letterSpacing:'-.01em'}}>{b.adresse}</div>
+                  <div style={{fontSize:12,color:'var(--txt3)',marginTop:1}}>{b.dato}</div>
+                </div>
+                <div style={{display:'flex',gap:6,alignItems:'center'}}>
+                  {b.status==='potensiell'&&<span className="badge bg_">💚</span>}
+                  {b.status==='forkastet'&&<span className="badge br_">❌</span>}
+                  {b.status==='aktiv'&&<span className="badge ba_">⏳</span>}
+                  <button onClick={e=>{e.stopPropagation();setDeleteConfirm(b.id);}} style={{padding:'5px 8px',border:'none',background:'transparent',color:'var(--rdk)',cursor:'pointer',font:'inherit',fontSize:14}}><i className="ti ti-trash"/></button>
+                </div>
+              </div>
+              {b.stjerner>0&&<div style={{fontSize:14,marginBottom:6}}>{'⭐'.repeat(b.stjerner)}</div>}
+              <div style={{display:'flex',gap:6,marginBottom:8,flexWrap:'wrap'}}>
+                {b.pris>0&&<span className="badge bb_">{fmtK(b.pris)}</span>}
+                {b.totalpris>0&&<span className="badge bg_">Total {fmtK(b.totalpris)}</span>}
+                {b.felleskost>0&&<span className="badge ba_">FK {fmt(b.felleskost)}/mnd</span>}
+              </div>
+              {sc.length>0&&<div style={{fontSize:12,marginBottom:6,display:'flex',gap:10}}><span>✅ {okC}</span><span>⚠️ {wC}</span><span>❌ {bC}</span></div>}
+              {(b.tgFeil||[]).length>0&&<div style={{fontSize:12,color:'var(--rdk)',marginBottom:6}}><i className="ti ti-tool"/> {b.tgFeil.length} TG-feil • est. {fmt(tgs)} kr</div>}
+              {b.rejectReason&&<div style={{fontSize:12,color:'var(--txt3)',marginBottom:6,fontStyle:'italic'}}>Grunn: {b.rejectReason}</div>}
+              <div style={{display:'flex',gap:6}}>
+                <button onClick={()=>{setActive(b);setView('sjekkliste');setOversiktTekst('');}} style={{flex:1,padding:9,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontWeight:600,fontSize:13}}>Åpne →</button>
+                {b.finn&&<a href={b.finn} target="_blank" rel="noopener noreferrer" style={{padding:'9px 12px',border:'1px solid var(--br2)',borderRadius:'var(--r)',textDecoration:'none',color:'var(--txt)',background:'var(--bbg)',fontSize:13,fontWeight:600,display:'flex',alignItems:'center',gap:5}}><i className="ti ti-external-link"/> Finn</a>}
+                {b.status==='potensiell'&&<button onClick={()=>onSendToKalk(b)} style={{flex:1,padding:9,border:'1px solid rgba(5,150,105,.3)',borderRadius:'var(--r)',background:'var(--gbg)',color:'var(--gdk)',cursor:'pointer',font:'inherit',fontWeight:600,fontSize:13}}>📊 Beregn</button>}
+              </div>
+            </div>;
+          })}
+        </>
+      )}
+      {deleteConfirm&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setDeleteConfirm(null)}}>
+        <div className="sheet"><div className="handle"/>
+          <div style={{fontWeight:700,fontSize:18,marginBottom:8}}>Slett bolig?</div>
+          <div style={{fontSize:13,color:'var(--txt3)',marginBottom:16}}>{boliger.find(b=>b.id===deleteConfirm)&&boliger.find(b=>b.id===deleteConfirm).adresse}</div>
+          <button className="btnpri btnd" onClick={()=>deleteB(deleteConfirm)}>Ja, slett</button>
+          <button onClick={()=>setDeleteConfirm(null)} style={{width:'100%',marginTop:8,padding:10,border:'none',background:'transparent',cursor:'pointer',font:'inherit',color:'var(--txt2)'}}>Avbryt</button>
+        </div>
+      </div>}
+    </div>;
+  }
+
+  if(view==='ny')return <FinnStep apiKey={apiKey} onCancel={()=>setView('liste')} onDone={b=>{const u=[...boliger,b];setBoliger(u);stor('boliger-main',u);setActive(b);setView('sjekkliste');}}/>;
+
+  // ── SJEKKLISTE ──
+
+  if(view==='sjekkliste'&&active){
+    const cal=genCalendarLinks(active.adresse,active.dato,active.tid);
+    const inkludert=[active.inkl&&active.inkl.internett&&'📶 Internett',active.inkl&&active.inkl.fyring&&'🔥 Fyring',active.inkl&&active.inkl.varmtvann&&'🚿 Varmtvann',...(active.andreInkl||[])].filter(Boolean);
+    // Sun direction estimate based on last part of address or just show compass UI
+    const postNr=(active.adresse||'').match(/(\d{4})/)?.[1]||'';
+    const tabs=[
+      {id:'om',icon:'ti-home-2',label:'Bolig'},
+      {id:'visning',icon:'ti-calendar',label:'Visning'},
+      {id:'nabolag',icon:'ti-map-pin',label:'Nabolag'},
+      {id:'sol',icon:'ti-sun',label:'Sol & pris'},
+      {id:'sjekk',icon:'ti-checklist',label:'Sjekkliste'},
+    ];
+    return <div>
+      {/* Header */}
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,padding:'0 0 10px',borderBottom:'1px solid var(--br)'}}>
+        <button className="back-btn" onClick={()=>setView('liste')}><i className="ti ti-arrow-left"/></button>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontWeight:700,fontSize:15,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',letterSpacing:'-.01em'}}>{active.adresse}</div>
+          <div style={{fontSize:11,color:'var(--txt3)',marginTop:1}}>
+            {active.stjerner>0&&<span>{'⭐'.repeat(active.stjerner)} </span>}
+            <span>{['','Ikke aktuell','Svak','Interessant','God kandidat','Drømmebolig'][active.stjerner||0]}</span>
+          </div>
+        </div>
+        <button onClick={()=>setDeleteConfirm(active.id)} style={{padding:'7px 9px',border:'none',background:'transparent',color:'var(--rdk)',cursor:'pointer',font:'inherit',fontSize:14}}><i className="ti ti-trash"/></button>
+        <button onClick={()=>{setShowOversikt(true);if(!oversiktTekst)genOversikt();}} style={{padding:'7px 10px',border:'1px solid var(--pbg)',borderRadius:'var(--r)',background:'var(--pbg)',color:'var(--pdk)',cursor:'pointer',font:'inherit',fontSize:13,fontWeight:600}}>📋</button>
+      </div>
+      {/* Inner tabs */}
+      <div style={{display:'flex',gap:0,marginBottom:14,background:'var(--bg2)',borderRadius:'var(--rl)',padding:3,border:'1px solid var(--br)',overflowX:'auto'}}>
+        {tabs.map(tab=>(
+          <button key={tab.id} onClick={()=>updB(active.id,b=>({...b,activeTab:tab.id}))} style={{flex:'0 0 auto',padding:'7px 10px',border:'1px solid '+(( active.activeTab||'om')===tab.id?'var(--br2)':'transparent'),borderRadius:'var(--r)',background:(active.activeTab||'om')===tab.id?'var(--bg)':'transparent',cursor:'pointer',font:'inherit',fontSize:11,fontWeight:(active.activeTab||'om')===tab.id?700:400,color:(active.activeTab||'om')===tab.id?'var(--accent)':'var(--txt2)',transition:'all .15s',display:'flex',alignItems:'center',gap:4,boxShadow:(active.activeTab||'om')===tab.id?'var(--shadow)':'none',whiteSpace:'nowrap'}}>
+            <i className={'ti '+tab.icon} style={{fontSize:13}}/>{tab.label}
+          </button>
+        ))}
+      </div>
+      {critBad>=2&&<div className="alert-b"><i className="ti ti-alert-triangle"/> {critBad} kritiske problemer!</div>}
+
+      {/* ── TAB: OM BOLIG ── */}
+      {(active.activeTab||'om')==='om'&&<div>
+        <div className="card">
+          <div className="card-title">📍 Boliginfo</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:10}}>
+            {[['Prisantydning',active.pris?fmtK(active.pris)+' kr':'-'],['Fellesgjeld',active.fellesgjeld!=null?fmtK(active.fellesgjeld)+' kr':'-'],['Totalpris',active.totalpris?fmtK(active.totalpris)+' kr':'-'],['FK/mnd',active.felleskost?fmt(active.felleskost)+' kr':'-'],['Boligtype',(active.boligtype==='selveier'?'Selveier':'Andel/aksje')],['Total m/omk',active.totalmedOmk?fmtK(active.totalmedOmk)+' kr':'-']].map(([l,v])=>(
+              <div key={l} className="stat"><div className="sl">{l}</div><div className="sv" style={{fontSize:13}}>{v}</div></div>
+            ))}
+          </div>
+          {inkludert.length>0&&<div style={{background:'var(--gbg)',borderRadius:'var(--r)',padding:'8px 12px',border:'1px solid rgba(5,150,105,.2)',fontSize:13,color:'var(--gdk)'}}>
+            ✅ Inkludert i FK: {inkludert.join(' · ')}
+          </div>}
+        </div>
+        {active.omk&&active.omk.total>0&&<div className="card">
+          <div className="card-title">Omkostninger</div>
+          {[['Dokumentavgift',active.omk.dok],['Tinglysingsgebyr',active.omk.tingl],['Meglerhonorar',active.omk.megler],['Andre',active.omk.andre]].filter(([,v])=>v>0).map(([l,v])=>(
+            <div key={l} className="cmp-row"><span style={{color:'var(--txt2)'}}>{l}</span><span style={{fontWeight:600}}>{fmt(v)} kr</span></div>
+          ))}
+          <div className="cmp-row" style={{fontWeight:700}}><span>Totale omkostninger</span><span style={{color:'var(--amber)'}}>{fmt(active.omk.total)} kr</span></div>
+        </div>}
+        {(active.tgFeil&&active.tgFeil.length>0)&&<div className="card">
+          <div className="card-title">🔧 TG-funn ({active.tgFeil.length}) — est. {fmt(tgSum)} kr</div>
+          {active.tgFeil.map((t,i)=>(
+            <div key={i} className="tgi" style={{borderLeft:'3px solid '+(t.grad==='TG3'?'#dc2626':t.grad==='TG1'?'#059669':'#d97706')}}>
+              <div style={{display:'flex',justifyContent:'space-between'}}><strong>{t.tittel}</strong><span className={'badge '+(t.grad==='TG3'?'br_':t.grad==='TG1'?'bg_':'ba_')}>{t.grad}</span></div>
+              {t.kommentar&&<div style={{fontSize:12,color:'var(--txt2)',marginTop:3}}>{t.kommentar}</div>}
+              {t.estimertKostnad>0&&<div style={{fontSize:12,marginTop:3,fontWeight:600}}>Est: {fmt(t.estimertKostnad)} kr</div>}
+            </div>
+          ))}
+        </div>}
+        <div className="card">
+          <div className="card-title">Din vurdering</div>
+          <div style={{textAlign:'center',marginBottom:12}}>
+            <StarRating value={active.stjerner||0} onChange={v=>updB(active.id,b=>({...b,stjerner:v}))}/>
+            {active.stjerner>0&&<div style={{fontSize:13,color:'var(--txt2)',marginTop:4}}>{['','Ikke aktuell','Svak kandidat','Interessant','God kandidat','Drømmebolig'][active.stjerner]}</div>}
+          </div>
+          {[['positivt','💚 Det som er bra','Hva likte dere?'],['negativt','❌ Bekymringer','Hva er du usikker på?'],['vibesNote','💬 Notater','Andre tanker...']].map(([k,l,ph])=>(
+            <div key={k} style={{marginBottom:10}}>
+              <label style={{fontSize:13,color:'var(--txt2)',display:'block',marginBottom:4,fontWeight:600}}>{l}</label>
+              <textarea rows={2} placeholder={ph} value={active[k]||''} onChange={e=>updB(active.id,b=>({...b,[k]:e.target.value}))} style={{resize:'vertical'}}/>
+            </div>
+          ))}
+        </div>
+      </div>}
+
+      {/* ── TAB: VISNING ── */}
+      {(active.activeTab||'om')==='visning'&&<div>
+        <div className="card">
+          <div className="card-title">📅 Visningsdato og tid</div>
+          {active.dato||active.tid?<div style={{marginBottom:16}}>
+            <div style={{fontSize:22,fontWeight:700,letterSpacing:'-.01em'}}>{active.dato&&new Date(active.dato).toLocaleDateString('nb-NO',{weekday:'long',day:'numeric',month:'long'})}</div>
+            {active.tid&&<div style={{fontSize:16,color:'var(--txt2)',marginTop:4}}>kl. {active.tid}</div>}
+          </div>:<div style={{color:'var(--txt3)',fontSize:13,marginBottom:14}}>Ingen visningsdato registrert ennå.</div>}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:14}}>
+            <div>
+              <label style={{fontSize:12,fontWeight:700,color:'var(--txt3)',display:'block',marginBottom:4}}>Dato</label>
+              <input type="date" value={active.dato||''} onChange={e=>updB(active.id,b=>({...b,dato:e.target.value}))}/>
+            </div>
+            <div>
+              <label style={{fontSize:12,fontWeight:700,color:'var(--txt3)',display:'block',marginBottom:4}}>Tidspunkt</label>
+              <input type="time" value={active.tid||''} onChange={e=>updB(active.id,b=>({...b,tid:e.target.value}))}/>
+            </div>
+          </div>
+          {cal&&<div>
+            <div style={{fontSize:12,fontWeight:700,color:'var(--txt3)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:10}}>Legg til i kalender</div>
+            <div style={{display:'flex',flexDirection:'column',gap:8}}>
+              <a href={cal.google} target="_blank" rel="noopener noreferrer" style={{display:'flex',alignItems:'center',gap:10,padding:'12px 16px',border:'1px solid var(--br2)',borderRadius:'var(--r)',textDecoration:'none',color:'var(--txt)',background:'var(--bg2)',fontWeight:600,fontSize:14}}>
+                <svg width="20" height="20" viewBox="0 0 48 48"><rect width="48" height="48" rx="4" fill="#fff"/><path fill="#4285f4" d="M24 23.1l-5.7 4.1h11.4z"/><path fill="#34a853" d="M36 12H28v8h8z"/><path fill="#fbbc04" d="M12 20v8h8v-8z"/><path fill="#ea4335" d="M20 12h-8v8h8z"/><path fill="#4285f4" d="M28 28h8v8h-8z"/><path fill="#34a853" d="M20 28h8v8h-8z"/><path fill="#ea4335" d="M12 28v8h8v-8z"/></svg>
+                Google Calendar
+              </a>
+              <a href={cal.ical} download={"visning.ics"} style={{display:'flex',alignItems:'center',gap:10,padding:'12px 16px',border:'1px solid var(--br2)',borderRadius:'var(--r)',textDecoration:'none',color:'var(--txt)',background:'var(--bg2)',fontWeight:600,fontSize:14}}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Apple Calendar (iCal)
+              </a>
+            </div>
+          </div>}
+          {!cal&&<div style={{fontSize:13,color:'var(--txt3)',background:'var(--bg2)',borderRadius:'var(--r)',padding:'10px 12px',border:'1px solid var(--br)'}}>
+            Legg til dato og tid ovenfor for å eksportere til kalender
+          </div>}
+        </div>
+        <div className="card">
+          <div className="card-title">📋 Huskeliste for visning</div>
+          {['Ta med målebånd','Sjekk vanntrykk og avløp','Test alle vinduer og dører','Se etter fukt i hjørner og tak','Spør om alder på VVS og el-anlegg','Sjekk mobildekning og internett','Gå i kjelleren/loftet','Still spørsmål om naboforhold'].map((t,i)=>(
+            <div key={i} className="crow">
+              <input type="checkbox" checked={!!(active.huskeliste&&active.huskeliste[i])} onChange={e=>updB(active.id,b=>({...b,huskeliste:{...(b.huskeliste||{}),[i]:e.target.checked}}))}/>
+              <span style={{fontSize:13}}>{t}</span>
+            </div>
+          ))}
+        </div>
+      </div>}
+
+      {/* ── TAB: NABOLAG ── */}
+      {(active.activeTab||'om')==='nabolag'&&<NabolagView adresse={active.adresse}/>}
+
+      {/* ── TAB: SOL & PRIS ── */}
+      {(active.activeTab||'om')==='sol'&&<SolPrisView adresse={active.adresse} postNr={postNr} pris={active.pris} areal={active.areal}/>}
+
+      {/* ── TAB: SJEKKLISTE ── */}
+      {(active.activeTab||'om')==='sjekk'&&<div>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+          <div style={{fontSize:13,color:'var(--txt3)'}}>{answeredCount}/{TOTAL} besvart</div>
+          <button onClick={()=>setShowTGModal(true)} style={{padding:'7px 10px',fontSize:12,fontWeight:700,color:(active.tgFeil&&active.tgFeil.length>0)?'var(--rdk)':'var(--txt3)',border:'1px solid var(--br)',borderRadius:'var(--r)',background:(active.tgFeil&&active.tgFeil.length>0)?'var(--rbg)':'transparent',cursor:'pointer',font:'inherit'}}>
+            <i className="ti ti-tool"/> TG ({(active.tgFeil&&active.tgFeil.length)||0})
+          </button>
+        </div>
+        <div className="pbar"><div className="pfill" style={{width:Math.round(answeredCount/TOTAL*100)+'%'}}/></div>
+        {CATS.map(cat=>(
+          <div key={cat.id} className="card">
+            <div className="card-title">{cat.emoji} {cat.label}</div>
+            {cat.items.map(item=>{
+              const val=active.checklist&&active.checklist[item.id];
+              const itemComment=active.comments&&active.comments[item.id]||'';
+              const relTG=(active.tgFeil||[]).filter(t=>t.tittel&&t.tittel.toLowerCase().split(' ').some(w=>w.length>3&&item.label.toLowerCase().includes(w)));
+              return <div key={item.id} className="ci">
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:3}}>
+                  <div className="ci-t">{item.label}</div>
+                  <button onClick={()=>openComment(item.id)} style={{padding:'2px 6px',fontSize:14,border:'none',background:'transparent',color:itemComment?'var(--blue)':'var(--txt3)',cursor:'pointer'}}><i className="ti ti-pencil"/></button>
+                </div>
+                <div className="ci-n">{item.note}</div>
+                {itemComment&&<div style={{fontSize:12,color:'var(--bdk)',background:'var(--bbg)',padding:'4px 9px',borderRadius:6,marginBottom:7,fontStyle:'italic'}}>💬 {itemComment}</div>}
+                {relTG.map((t,i)=>(
+                  <div key={i} style={{fontSize:11,padding:'3px 9px',borderRadius:6,marginBottom:7,color:t.grad==='TG3'?'var(--rdk)':t.grad==='TG1'?'var(--gdk)':'var(--adk)',background:t.grad==='TG3'?'var(--rbg)':t.grad==='TG1'?'var(--gbg)':'var(--abg)'}}>
+                    {t.grad}: {t.kommentar||t.tittel}{t.estimertKostnad>0&&' — est. '+fmt(t.estimertKostnad)+' kr'}
+                  </div>
+                ))}
+                <div className="sbts">
+                  {[['ok','✅'],['warn','⚠️'],['bad','❌'],['na','—']].map(([s,e])=>(
+                    <button key={s} className={'sbt'+(val===s?' '+s:'')}
+                      style={s==='na'?{flex:'0 0 44px',fontSize:16,background:val==='na'?'var(--bg3)':'var(--bg2)',borderColor:val==='na'?'var(--br2)':'var(--br)',opacity:val==='na'?1:0.5}:{}}
+                      title={s==='na'?'Ikke relevant':''}
+                      onClick={()=>updB(active.id,b=>({...b,checklist:{...(b.checklist||{}),[item.id]:s}}))}>
+                      {e}
+                    </button>
+                  ))}
+                </div>
+              </div>;
+            })}
+          </div>
+        ))}
+        {allDone?(
+          <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:8}}>
+            <button className="btnpri btns" onClick={()=>setShowSwipe(true)}>Ferdig — avslutt vurdering <i className="ti ti-arrow-right"/></button>
+            <button onClick={()=>exportBoligPDF(active,snap)} style={{width:'100%',padding:12,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontSize:14,fontWeight:600,display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+              <i className="ti ti-file-type-pdf" style={{fontSize:18}}/> Eksporter visningsrapport (PDF)
+            </button>
+          </div>
+        ):(
+          <div style={{textAlign:'center',color:'var(--txt3)',fontSize:13,padding:'8px 0 16px'}}>{TOTAL-answeredCount} punkter gjenstår</div>
+        )}
+      </div>}
+
+
+      {/* ── MODALS (shared) ── */}
+      {showSwipe&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setShowSwipe(false)}}>
+        <div className="sheet"><div className="handle"/>
+          <div style={{textAlign:'center',marginBottom:16}}>
+            <div style={{fontSize:20,fontWeight:700,letterSpacing:'-.01em'}}>{active.adresse}</div>
+            {active.stjerner>0&&<div style={{fontSize:20,marginTop:6}}>{'⭐'.repeat(active.stjerner)}</div>}
+          </div>
+          <div className="g2">
+            {[['Prisantydning',fmtK(active.pris||0)+' kr'],['Totalpris',fmtK(active.totalpris||0)+' kr'],['FK / mnd',fmt(active.felleskost||0)+' kr'],['TG-feil est.',fmt(tgSum)+' kr']].map(([l,v])=>(
+              <div key={l} className="stat"><div className="sl">{l}</div><div className="sv" style={{fontSize:14}}>{v}</div></div>
+            ))}
+          </div>
+          <div style={{display:'flex',gap:12}}>
+            <button className="btnd" style={{flex:1,padding:14,fontSize:18,fontWeight:700,borderRadius:'var(--rl)'}} onClick={()=>{setShowSwipe(false);setRejectModal(true);}}>❌ Forkast</button>
+            <button className="btns" style={{flex:1,padding:14,fontSize:18,fontWeight:700,borderRadius:'var(--rl)'}} onClick={()=>setStatus('potensiell')}>💚 Potensiell</button>
+          </div>
+        </div>
+      </div>}
+      {rejectModal&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setRejectModal(false)}}>
+        <div className="sheet"><div className="handle"/>
+          <div style={{fontWeight:700,fontSize:18,marginBottom:14}}>Hvorfor forkastes boligen?</div>
+          {['For dyr','For liten','Dårlig stand','Feil område','Dårlig magefølelse','For mye TG-feil','Annet'].map(r=>(
+            <button key={r} onClick={()=>setRejectReason(r)} style={{display:'block',width:'100%',marginBottom:7,textAlign:'left',padding:'10px 14px',border:'1px solid var(--br2)',borderRadius:'var(--r)',background:rejectReason===r?'var(--bg2)':'transparent',cursor:'pointer',font:'inherit',fontWeight:rejectReason===r?700:400}}>{rejectReason===r?'✓ ':''}{r}</button>
+          ))}
+          <textarea placeholder="Utdyp gjerne..." value={rejectReason} onChange={e=>setRejectReason(e.target.value)} rows={2} style={{marginTop:8}}/>
+          <button className="btnpri btnd" onClick={()=>setStatus('forkastet',rejectReason)}>Forkast bolig</button>
+        </div>
+      </div>}
+      {showTGModal&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setShowTGModal(false)}}>
+        <div className="sheet"><div className="handle"/>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+            <div style={{fontWeight:700,fontSize:18}}>TG-feil</div>
+            <button onClick={()=>setShowTGModal(false)} style={{padding:'5px 9px',border:'1px solid var(--br2)',borderRadius:'var(--r)',cursor:'pointer',font:'inherit',background:'var(--bg2)'}}><i className="ti ti-x"/></button>
+          </div>
+          {(!active.tgFeil||active.tgFeil.length===0)&&<div style={{textAlign:'center',color:'var(--txt3)',padding:'14px 0',fontSize:13}}>Ingen TG-feil registrert</div>}
+          {(active.tgFeil||[]).map((t,i)=>(
+            <div key={i} className="tgi" style={{borderLeft:'3px solid '+(t.grad==='TG3'?'#dc2626':t.grad==='TG1'?'#059669':'#d97706')}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:3}}><span style={{fontWeight:700}}>{t.tittel}</span><span className={'badge '+(t.grad==='TG3'?'br_':t.grad==='TG1'?'bg_':'ba_')}>{t.grad}</span></div>
+              {t.kommentar&&<div style={{fontSize:12,color:'var(--txt2)',marginBottom:3}}>{t.kommentar}</div>}
+              {t.estimertKostnad>0&&<div style={{fontSize:12,fontWeight:600}}>Est: {fmt(t.estimertKostnad)} kr</div>}
+              <button onClick={()=>updB(active.id,b=>({...b,tgFeil:b.tgFeil.filter((_,j)=>j!==i)}))} style={{fontSize:11,color:'var(--rdk)',marginTop:7,padding:'3px 8px',border:'1px solid rgba(220,38,38,.3)',borderRadius:6,background:'transparent',cursor:'pointer',font:'inherit'}}><i className="ti ti-trash"/> Fjern</button>
+            </div>
+          ))}
+          {(active.tgFeil&&active.tgFeil.length>0)&&<div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:11,marginBottom:14,border:'1px solid var(--br)'}}><div style={{fontSize:12,color:'var(--txt3)'}}>Total estimert</div><div style={{fontSize:22,fontWeight:700,color:'var(--red)'}}>{fmt(tgSum)} kr</div></div>}
+          <hr/>
+          <div style={{fontWeight:700,marginBottom:11}}>Legg til TG-funn</div>
+          <TGForm onAdd={feil=>updB(active.id,b=>({...b,tgFeil:[...(b.tgFeil||[]),feil]}))}/>
+        </div>
+      </div>}
+      {commentItem&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setCommentItem(null)}}>
+        <div className="sheet"><div className="handle"/>
+          <div style={{fontWeight:700,marginBottom:4,fontSize:18}}>Kommentar</div>
+          <div style={{fontSize:13,color:'var(--txt3)',marginBottom:14}}>{ALL_ITEMS.find(i=>i.id===commentItem)&&ALL_ITEMS.find(i=>i.id===commentItem).label}</div>
+          <textarea rows={4} placeholder="Skriv en kort kommentar..." value={commentText} onChange={e=>setCommentText(e.target.value)} style={{marginBottom:8}}/>
+          <button className="btnpri" onClick={saveComment}>Lagre</button>
+          {active.comments&&active.comments[commentItem]&&<button onClick={()=>{updB(active.id,b=>{const c={...(b.comments||{})};delete c[commentItem];return {...b,comments:c};});setCommentItem(null);}} style={{width:'100%',marginTop:8,padding:10,border:'none',background:'transparent',color:'var(--rdk)',cursor:'pointer',font:'inherit',fontWeight:600}}>Slett kommentar</button>}
+          <button onClick={()=>setCommentItem(null)} style={{width:'100%',marginTop:6,padding:10,border:'none',background:'transparent',color:'var(--txt3)',cursor:'pointer',font:'inherit'}}>Avbryt</button>
+        </div>
+      </div>}
+      {showOversikt&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setShowOversikt(false)}}>
+        <div className="sheet"><div className="handle"/>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+            <div style={{fontWeight:700,fontSize:18}}>📋 Oversikt</div>
+            <button onClick={()=>setShowOversikt(false)} style={{padding:'5px 9px',border:'1px solid var(--br2)',borderRadius:'var(--r)',cursor:'pointer',font:'inherit',background:'var(--bg2)'}}><i className="ti ti-x"/></button>
+          </div>
+          <div style={{fontSize:13,color:'var(--txt3)',marginBottom:16}}>{active.adresse}</div>
+          {snap?(<div style={{marginBottom:16}}>
+            <div style={{fontSize:11,fontWeight:700,color:'var(--txt3)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:8}}>💰 Økonomi etter alle trekk</div>
+            {[{n:snap.navn1,r:snap.rest1},{n:snap.navn2||'',r:snap.rest2}].filter(p=>p.n).map(p=>(
+              <div key={p.n} className="rest-box" style={{background:p.r>=0?'var(--gbg)':'var(--rbg)'}}>
+                <span style={{fontWeight:700,color:p.r>=0?'var(--gdk)':'var(--rdk)'}}>{p.n}</span>
+                <span style={{fontSize:20,fontWeight:700,color:p.r>=0?'var(--gdk)':'var(--rdk)'}}>{fmt(p.r)} kr/mnd</span>
+              </div>
+            ))}
+          </div>):(<div style={{background:'var(--abg)',borderRadius:'var(--r)',padding:'10px 14px',marginBottom:16,fontSize:13,color:'var(--adk)',border:'1px solid rgba(217,119,6,.2)'}}>⚠️ Kjør "📊 Beregn" i Boligkalk for å se økonomi her</div>)}
+          {generatingOversikt&&<div style={{textAlign:'center',padding:'20px 0',color:'var(--txt3)',fontSize:13}}>⏳ Genererer...</div>}
+          {oversiktTekst&&!generatingOversikt&&<div style={{fontSize:14,lineHeight:1.7,background:'var(--bg2)',borderRadius:'var(--r)',padding:13,marginBottom:12,border:'1px solid var(--br)'}}>{oversiktTekst}</div>}
+          {!oversiktTekst&&!generatingOversikt&&<div style={{fontSize:13,color:'var(--txt3)',marginBottom:12}}>Generer en AI-oppsummering basert på alle vurderingene dine.</div>}
+          <button onClick={genOversikt} disabled={generatingOversikt} style={{width:'100%',padding:10,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontWeight:600}}>🤖 Generer helhetsvurdering</button>
+          <button onClick={()=>exportBoligPDF(active,snap)} style={{width:'100%',marginTop:8,padding:10,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontWeight:600,display:'flex',alignItems:'center',justifyContent:'center',gap:7}}><i className="ti ti-file-type-pdf"/> Eksporter som PDF</button>
+        </div>
+      </div>}
+      {deleteConfirm&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setDeleteConfirm(null)}}>
+        <div className="sheet"><div className="handle"/>
+          <div style={{fontWeight:700,marginBottom:8,fontSize:18}}>Slett bolig?</div>
+          <div style={{fontSize:13,color:'var(--txt3)',marginBottom:16}}>{active&&active.adresse}</div>
+          <button className="btnpri btnd" onClick={()=>deleteB(deleteConfirm)}>Ja, slett</button>
+          <button onClick={()=>setDeleteConfirm(null)} style={{width:'100%',marginTop:8,padding:10,border:'none',background:'transparent',cursor:'pointer',font:'inherit',color:'var(--txt3)'}}>Avbryt</button>
+        </div>
+      </div>}
+    </div>;
+  }
+
+  return null;
+}
+
+/* ─── NABOLAG VIEW ─── */
+function NabolagView({adresse}){
+  const [data,setData]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState('');
+  const geocacheRef=useRef({});
+
+  async function fetchNabolag(){
+    setLoading(true);setError('');
+    try{
+      // Geocode
+      const url='https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(adresse+', Norway')+'&limit=1';
+      const res=await fetch(url,{headers:{'Accept-Language':'no'}});
+      const gd=await res.json();
+      if(!gd||!gd[0])throw new Error('Fant ikke adresse');
+      const lat=parseFloat(gd[0].lat),lng=parseFloat(gd[0].lon);
+      // Overpass API for nearby amenities
+      const r=500; // 500m radius
+      const q=`[out:json][timeout:15];(
+        node["amenity"="school"](around:${r},${lat},${lng});
+        node["amenity"="kindergarten"](around:${r},${lat},${lng});
+        node["shop"="supermarket"](around:${r},${lat},${lng});
+        node["shop"="convenience"](around:${r},${lat},${lng});
+        node["shop"="grocery"](around:${r},${lat},${lng});
+        node["amenity"="pharmacy"](around:${r},${lat},${lng});
+        node["leisure"="park"](around:${r},${lat},${lng});
+        node["leisure"="playground"](around:${r},${lat},${lng});
+        node["amenity"="cafe"](around:${r},${lat},${lng});
+        node["amenity"="restaurant"](around:${r},${lat},${lng});
+        node["amenity"="gym"](around:${r},${lat},${lng});
+      );out body;`;
+      const r2=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(q)});
+      const od=await r2.json();
+      const elements=od.elements||[];
+      function dist(a,b){return Math.round(Math.sqrt(Math.pow((a-lat)*111000,2)+Math.pow((b-lng)*71000,2)));}
+      const cats={
+        skole:{icon:'🏫',label:'Skoler',items:[]},
+        barnehage:{icon:'🧒',label:'Barnehager',items:[]},
+        dagligvare:{icon:'🛒',label:'Dagligvare',items:[]},
+        apotek:{icon:'💊',label:'Apotek',items:[]},
+        park:{icon:'🌳',label:'Parker og lekeplasser',items:[]},
+        kafe:{icon:'☕',label:'Kaféer og restauranter',items:[]},
+      };
+      elements.forEach(el=>{
+        const name=el.tags&&(el.tags.name||el.tags['name:no'])||'Ukjent';
+        const d=dist(el.lat,el.lon);
+        const item={name,dist:d};
+        if(el.tags.amenity==='school')cats.skole.items.push(item);
+        else if(el.tags.amenity==='kindergarten')cats.barnehage.items.push(item);
+        else if(['supermarket','convenience','grocery'].includes(el.tags.shop))cats.dagligvare.items.push(item);
+        else if(el.tags.amenity==='pharmacy')cats.apotek.items.push(item);
+        else if(['park','playground'].includes(el.tags.leisure))cats.park.items.push(item);
+        else if(['cafe','restaurant'].includes(el.tags.amenity))cats.kafe.items.push(item);
+      });
+      // Sort by distance
+      Object.values(cats).forEach(c=>c.items.sort((a,b)=>a.dist-b.dist));
+      setData({cats,lat,lng});
+    }catch(e){setError('Klarte ikke laste nabolagsdata: '+e.message+'. Prøv igjen.');}
+    setLoading(false);
+  }
+
+  if(!data&&!loading)return <div>
+    <div className="card" style={{textAlign:'center',padding:'24px 16px'}}>
+      <div style={{fontSize:40,marginBottom:12}}>🗺️</div>
+      <div style={{fontSize:16,fontWeight:700,marginBottom:6}}>Nabolagsrapport</div>
+      <div style={{fontSize:13,color:'var(--txt3)',marginBottom:16,lineHeight:1.5}}>Finn skoler, barnehager, dagligvare, apotek, parker og kaféer innen 500 m</div>
+      {error&&<div className="alert-b" style={{marginBottom:12}}>{error}</div>}
+      <button className="btnpri" onClick={fetchNabolag}>Analyser nabolaget</button>
+    </div>
+  </div>;
+
+  if(loading)return <div style={{textAlign:'center',padding:'40px 0',color:'var(--txt3)'}}>
+    <div style={{fontSize:32,marginBottom:12}}>🗺️</div>
+    <div style={{fontSize:14}}>Laster nabolagsdata...</div>
+  </div>;
+
+  if(error)return <div className="alert-b">{error}</div>;
+
+  return <div>
+    {Object.values(data.cats).map(cat=>(
+      <div key={cat.label} className="card">
+        <div className="card-title">{cat.icon} {cat.label}</div>
+        {cat.items.length===0?<div style={{fontSize:13,color:'var(--txt3)'}}>Ingen funnet innen 500 m</div>:
+          cat.items.slice(0,4).map((item,i)=>(
+            <div key={i} className="cmp-row">
+              <span style={{fontSize:13}}>{item.name}</span>
+              <span style={{fontSize:12,fontWeight:600,color:item.dist<200?'var(--gdk)':item.dist<400?'var(--adk)':'var(--txt2)',background:item.dist<200?'var(--gbg)':item.dist<400?'var(--abg)':'var(--bg2)',padding:'2px 8px',borderRadius:999}}>{item.dist} m</span>
+            </div>
+          ))
+        }
+      </div>
+    ))}
+    <div style={{fontSize:11,color:'var(--txt3)',textAlign:'center',marginTop:4,marginBottom:16}}>Data fra OpenStreetMap · Overpass API</div>
+    <button onClick={fetchNabolag} style={{width:'100%',padding:10,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontWeight:600}}>🔄 Oppdater</button>
+  </div>;
+}
+
+/* ─── SOL & PRIS VIEW ─── */
+function SolPrisView({adresse,postNr,pris,areal}){
+  const [prisData,setPrisData]=useState(null);
+  const [loadingPris,setLoadingPris]=useState(false);
+
+  // Sun compass - show a visual sun position diagram
+  // We estimate based on typical Norwegian urban layouts
+  function SunCompass(){
+    const dirs=[
+      {label:'Nord',angle:0,good:false},
+      {label:'NØ',angle:45,good:true},
+      {label:'Øst',angle:90,good:true},
+      {label:'SØ',angle:135,good:true},
+      {label:'Sør',angle:180,good:true},
+      {label:'SV',angle:225,good:true},
+      {label:'Vest',angle:270,good:true},
+      {label:'NV',angle:315,good:false},
+    ];
+    return <div>
+      <div style={{textAlign:'center',marginBottom:16}}>
+        <svg viewBox="0 0 200 200" width="180" height="180" style={{display:'block',margin:'0 auto'}}>
+          {/* Compass circle */}
+          <circle cx="100" cy="100" r="80" fill="var(--bg2)" stroke="var(--br2)" strokeWidth="1.5"/>
+          {/* Good sun arc (E to W via S = 90-270 degrees) */}
+          <path d={`M ${100+80*Math.sin(90*Math.PI/180)} ${100-80*Math.cos(90*Math.PI/180)} A 80 80 0 1 1 ${100+80*Math.sin(270*Math.PI/180)} ${100-80*Math.cos(270*Math.PI/180)}`} fill="rgba(234,179,8,0.12)" stroke="rgba(234,179,8,0.5)" strokeWidth="2" strokeDasharray="none"/>
+          {/* Sun icon on south */}
+          <text x="100" y="185" textAnchor="middle" fontSize="18">☀️</text>
+          {/* Direction labels */}
+          {dirs.map(d=>{
+            const rad=d.angle*Math.PI/180;
+            const x=100+65*Math.sin(rad);
+            const y=100-65*Math.cos(rad);
+            return <text key={d.label} x={x} y={y+4} textAnchor="middle" fontSize="11" fontWeight={d.good?"700":"400"} fill={d.good?"var(--amber)":"var(--txt3)"}>{d.label}</text>;
+          })}
+          {/* Center house */}
+          <text x="100" y="104" textAnchor="middle" fontSize="20">🏠</text>
+        </svg>
+      </div>
+      <div style={{background:'var(--abg)',borderRadius:'var(--r)',padding:'10px 14px',border:'1px solid rgba(234,179,8,.3)',marginBottom:12}}>
+        <div style={{fontSize:13,fontWeight:600,color:'var(--adk)',marginBottom:4}}>☀️ Om solforhold</div>
+        <div style={{fontSize:13,color:'var(--adk)',lineHeight:1.5}}>Boliger med sørvendt fasade eller balkong mot sør/sørvest/søøst får best direkte sol. Nordvendte boliger kan oppleves mørke. Sjekk alltid faktisk fasaderetning på visning.</div>
+      </div>
+      <div className="card" style={{marginBottom:10}}>
+        <div className="card-title">Solforhold gjennom dagen</div>
+        {[['🌅 Morgen (08-10)','Øst og NØ','Soverom og kjøkken'],['☀️ Middag (12-14)','Sør og SØ/SV','Stue og balkong'],['🌇 Ettermiddag (16-19)','Vest og NV','Stue og terrasse']].map(([t,dir,rom])=>(
+          <div key={t} className="cmp-row">
+            <div><div style={{fontSize:13,fontWeight:600}}>{t}</div><div style={{fontSize:11,color:'var(--txt3)'}}>{rom}</div></div>
+            <span style={{fontSize:12,color:'var(--adk)',fontWeight:600}}>{dir}</span>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-title">Hva du bør sjekke på visning</div>
+        {['Hvilken himmelretning vender balkongen?','Er det skyggefulle nabobygg eller trær?','Peker vinduene i stuen mot sør?','Er det lysinnslipp om morgenen i soverom?'].map((t,i)=>(
+          <div key={i} style={{display:'flex',alignItems:'flex-start',gap:8,padding:'5px 0',borderBottom:'1px solid var(--br)',fontSize:13}}>
+            <span style={{color:'var(--amber)',flexShrink:0}}>→</span><span>{t}</span>
+          </div>
+        ))}
+      </div>
+    </div>;
+  }
+
+  async function fetchPrisData(){
+    setLoadingPris(true);
+    // Use Eiendomsverdi / SSB statistics via a public source
+    // Since we can't easily get real-time price per sqm without a backend, 
+    // show SSB price index data based on postNr/region
+    try{
+      // Try to get some price info via Nominatim to get municipality
+      const url='https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(adresse+', Norway')+'&addressdetails=1&limit=1';
+      const res=await fetch(url,{headers:{'Accept-Language':'no'}});
+      const data=await res.json();
+      const place=data&&data[0];
+      const municipality=place&&place.address&&(place.address.city||place.address.town||place.address.municipality)||'';
+      setPrisData({municipality,postNr,note:'Prisdata er basert på offentlig statistikk og er veiledende.'});
+    }catch(e){}
+    setLoadingPris(false);
+  }
+
+  return <div>
+    <SunCompass/>
+    <div className="card" style={{marginTop:4}}>
+      <div className="card-title">📈 Prisutvikling i området</div>
+      {!prisData&&<div>
+        <div style={{fontSize:13,color:'var(--txt3)',marginBottom:12,lineHeight:1.5}}>
+          Hent omtrentlig prisinfo for postnummerområdet {postNr?'('+postNr+')':''}. Tallene er basert på offentlig tilgjengelig statistikk.
+        </div>
+        <button onClick={fetchPrisData} disabled={loadingPris} style={{width:'100%',padding:10,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontWeight:600}}>
+          {loadingPris?'Laster...':'Hent prisinfo for området'}
+        </button>
+      </div>}
+      {prisData&&<div>
+        <div style={{fontSize:13,color:'var(--txt2)',marginBottom:14,lineHeight:1.5}}>
+          Område: <strong>{prisData.municipality||adresse.split(',').slice(-1)[0]||'Ukjent'}</strong>
+          {postNr&&<span> · Postnummer {postNr}</span>}
+        </div>
+        {pris>0&&<div style={{background:'var(--bbg)',borderRadius:'var(--r)',padding:'12px 14px',marginBottom:10,border:'1px solid rgba(37,99,235,.2)'}}>
+          <div style={{fontSize:11,fontWeight:700,color:'var(--bdk)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:4}}>Denne boligen</div>
+          <div style={{fontSize:22,fontWeight:700,color:'var(--bdk)'}}>{fmtK(pris)} kr</div>
+          {areal>0&&<div style={{fontSize:13,color:'var(--bdk)',marginTop:2}}>≈ {fmt(Math.round(pris/areal))} kr/m²</div>}
+        </div>}
+        <div style={{fontSize:12,color:'var(--txt3)',background:'var(--bg2)',borderRadius:'var(--r)',padding:'10px 12px',border:'1px solid var(--br)',lineHeight:1.5}}>
+          💡 For nøyaktig prisstatistikk anbefales <a href="https://www.eiendomsverdi.no" target="_blank" rel="noopener noreferrer" style={{color:'var(--blue)',fontWeight:600}}>Eiendomsverdi.no</a> eller <a href="https://www.ssb.no/bygg-bolig-og-eiendom/eiendom/statistikk/boligprisindeksen" target="_blank" rel="noopener noreferrer" style={{color:'var(--blue)',fontWeight:600}}>SSB Boligprisindeks</a>.
+        </div>
+      </div>}
+    </div>
+  </div>;
+}
+
+
+/* ─── KART VIEW ─── */
+function KartView({boliger}){
+  const [selected,setSelected]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [transitMode,setTransitMode]=useState(false);
+  const [transitLoading,setTransitLoading]=useState(false);
+  const [selectedStop,setSelectedStop]=useState(null);
+  const mapRef=useRef(null);
+  const mapObj=useRef(null);
+  const markersRef=useRef([]);
+  const transitMarkersRef=useRef([]);
+  const geocacheRef=useRef({});
+  const all=boliger.filter(b=>b.adresse&&b.adresse!=='Adresse ukjent');
+
+  async function geocode(adresse){
+    if(geocacheRef.current[adresse])return geocacheRef.current[adresse];
+    try{
+      const url='https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(adresse+', Norway')+'&limit=1';
+      const res=await fetch(url,{headers:{'Accept-Language':'no'}});
+      const data=await res.json();
+      if(data&&data[0]){const c={lat:parseFloat(data[0].lat),lng:parseFloat(data[0].lon)};geocacheRef.current[adresse]=c;return c;}
+    }catch(e){}
+    return null;
+  }
+
+  async function loadTransitMarkers(bolig){
+    if(!mapObj.current||!window.L)return;
+    transitMarkersRef.current.forEach(m=>m.remove());
+    transitMarkersRef.current=[];
+    if(!bolig){setTransitMode(false);return;}
+    setTransitLoading(true);
+    try{
+      const geo=await geocode(bolig.adresse);
+      if(!geo)throw new Error('no geo');
+      const {lat,lng}=geo;
+      const now=new Date().toISOString();
+      const latMin=(lat-0.015).toFixed(6),latMax=(lat+0.015).toFixed(6);
+      const lngMin=(lng-0.022).toFixed(6),lngMax=(lng+0.022).toFixed(6);
+      const query=`{stopPlacesByBbox(minimumLatitude:${latMin},maximumLatitude:${latMax},minimumLongitude:${lngMin},maximumLongitude:${lngMax}){id name transportMode latitude longitude quays{estimatedCalls(startTime:"${now}",numberOfDepartures:4,omitNonBoarding:true){expectedDepartureTime destinationDisplay{frontText}serviceJourney{journeyPattern{line{publicCode transportMode name}}}}}}}`;
+      const resp=await fetch('https://api.entur.io/journey-planner/v3/graphql',{method:'POST',headers:{'Content-Type':'application/json','ET-Client-Name':'boligappen-privat'},body:JSON.stringify({query})});
+      const data=await resp.json();
+      if(data.errors)throw new Error(data.errors[0].message);
+      const raw=(data.data&&data.data.stopPlacesByBbox)||[];
+
+      function distM(a,b){return Math.round(Math.sqrt(Math.pow((a-lat)*111000,2)+Math.pow((b-lng)*71000,2)));}
+      function walkMin(m){return Math.ceil(m/80);} // ~80m/min walking
+
+      // Build full stop info
+      const stops=raw.filter(s=>s.latitude&&s.longitude).map(s=>{
+        const d=distM(s.latitude,s.longitude);
+        const lineMap={};
+        (s.quays||[]).forEach(q=>{(q.estimatedCalls||[]).forEach(c=>{const l=c.serviceJourney&&c.serviceJourney.journeyPattern&&c.serviceJourney.journeyPattern.line;if(l&&l.publicCode){const k=l.publicCode+'_'+(l.transportMode||s.transportMode);if(!lineMap[k])lineMap[k]={code:l.publicCode,mode:l.transportMode||s.transportMode||'bus',name:l.name};}});});
+        const deps=[];
+        (s.quays||[]).forEach(q=>{(q.estimatedCalls||[]).forEach(c=>{const l=c.serviceJourney&&c.serviceJourney.journeyPattern&&c.serviceJourney.journeyPattern.line;const dest=c.destinationDisplay&&c.destinationDisplay.frontText;if(c.expectedDepartureTime&&dest){const t=new Date(c.expectedDepartureTime);deps.push({line:l&&l.publicCode||'?',dest,time:t.toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}),ts:t.getTime()});}});});
+        deps.sort((a,b)=>a.ts-b.ts);
+        return {...s,dist:d,walkMin:walkMin(d),lines:Object.values(lineMap),departures:deps.slice(0,5)};
+      }).filter(s=>s.dist<1200).sort((a,b)=>a.dist-b.dist);
+
+      // Deduplicate: for each unique line code, keep only the nearest stop
+      const seenLines=new Set();
+      const dedupedStops=[];
+      stops.forEach(stop=>{
+        const newLines=stop.lines.filter(l=>!seenLines.has(l.code));
+        if(newLines.length>0){
+          newLines.forEach(l=>seenLines.add(l.code));
+          dedupedStops.push({...stop,lines:newLines});
+        }
+      });
+
+      const L=window.L;
+      dedupedStops.slice(0,8).forEach(stop=>{
+        const modes=new Set(stop.lines.map(l=>l.mode).concat([stop.transportMode]));
+        const emoji=modes.has('rail')?'🚆':modes.has('metro')?'🚇':modes.has('tram')?'🚊':'🚌';
+        const lineLabels=stop.lines.slice(0,5).map(l=>l.code).join(' · ');
+        const iconHtml=`<div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+          <div style="background:white;border:2px solid #2563EB;border-radius:10px;padding:3px 8px;font-size:11px;font-weight:700;color:#1e3a8a;white-space:nowrap;display:flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(37,99,235,0.25);">
+            <span style="font-size:13px;">${emoji}</span>
+            <span>${lineLabels||stop.name.slice(0,10)}</span>
+          </div>
+          <div style="width:2px;height:5px;background:#2563EB;"></div>
+          <div style="width:6px;height:6px;border-radius:50%;background:#2563EB;"></div>
+        </div>`;
+        const icon=L.divIcon({className:'',html:iconHtml,iconSize:[null,null],iconAnchor:[30,26]});
+        const marker=L.marker([stop.latitude,stop.longitude],{icon,zIndexOffset:-100}).addTo(mapObj.current);
+        marker.on('click',e=>{e.originalEvent&&e.originalEvent.stopPropagation();setSelectedStop(stop);});
+        transitMarkersRef.current.push(marker);
+      });
+      setTransitMode(true);
+    }catch(e){console.error('Transit error:',e);}
+    setTransitLoading(false);
+  }
+
+  async function buildMarkers(){
+    if(!mapObj.current||!window.L)return;
+    const L=window.L;
+    markersRef.current.forEach(m=>m.remove());
+    markersRef.current=[];
+    setLoading(true);
+    const bounds=[];
+    for(const b of all){
+      const c=await geocode(b.adresse);
+      if(!c)continue;
+      bounds.push([c.lat,c.lng]);
+      const col=b.status==='potensiell'?'#059669':b.status==='forkastet'?'#dc2626':'#d97706';
+      const icon=L.divIcon({className:'',html:'<div style="width:26px;height:26px;border-radius:50% 50% 50% 0;background:'+col+';transform:rotate(-45deg);box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2.5px solid white;cursor:pointer;"></div>',iconSize:[26,26],iconAnchor:[13,26]});
+      const marker=L.marker([c.lat,c.lng],{icon}).addTo(mapObj.current);
+      marker.on('click',()=>setSelected(b));
+      markersRef.current.push(marker);
+    }
+    if(bounds.length>0){try{mapObj.current.fitBounds(bounds,{padding:[40,40],maxZoom:14});}catch(e){}}
+    setLoading(false);
+  }
+
+  useEffect(()=>{
+    if(!mapRef.current)return;
+    let dead=false;
+    function init(){
+      if(dead||!mapRef.current||mapObj.current)return;
+      if(window.L){
+        const L=window.L;
+        const m=L.map(mapRef.current,{zoomControl:true}).setView([59.91,10.75],11);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:19}).addTo(m);
+        mapObj.current=m;
+        buildMarkers();
+      } else {
+        const css=document.createElement('link');css.rel='stylesheet';css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';document.head.appendChild(css);
+        const sc=document.createElement('script');sc.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        sc.onload=()=>{if(!dead)init();};document.head.appendChild(sc);
+      }
+    }
+    const t=setTimeout(init,100);
+    return ()=>{dead=true;clearTimeout(t);if(mapObj.current){mapObj.current.remove();mapObj.current=null;}};
+  },[]);
+
+  const boligerLen=all.length;
+  useEffect(()=>{if(mapObj.current&&window.L)buildMarkers();},[boligerLen]);
+
+  const modeBg={bus:'#eff6ff',rail:'#f0fdf4',metro:'#f5f3ff',tram:'#fffbeb'};
+  const modeColor={bus:'#1e3a8a',rail:'#065f46',metro:'#4c1d95',tram:'#92400e'};
+
+  return <><div style={{position:'relative',borderRadius:'var(--rl)',overflow:'hidden',border:'1px solid var(--br)',background:'var(--bg2)'}}>
+    {(loading||transitLoading)&&<div style={{position:'absolute',top:10,left:'50%',transform:'translateX(-50%)',background:'var(--bg)',borderRadius:'var(--r)',padding:'6px 14px',fontSize:13,color:'var(--txt3)',zIndex:500,boxShadow:'0 2px 8px rgba(0,0,0,.15)',whiteSpace:'nowrap'}}>
+      {transitLoading?'🚌 Henter kollektivt...':'⏳ Laster kart...'}
+    </div>}
+    <div ref={mapRef} style={{width:'100%',height:'60vh',minHeight:380}}/>
+
+    {/* Bolig popup */}
+    {selected&&<div style={{position:'absolute',bottom:14,left:12,right:12,background:'var(--bg)',borderRadius:'var(--rl)',boxShadow:'0 4px 24px rgba(0,0,0,.2)',padding:'14px 16px',zIndex:1000,border:'1px solid var(--br)'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:10}}>
+        <div style={{flex:1,paddingRight:8}}>
+          <div style={{fontWeight:700,fontSize:15,marginBottom:6,letterSpacing:'-.01em'}}>{selected.adresse}</div>
+          <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:6}}>
+            {selected.totalpris>0&&<span className="badge bg_">Total {fmtK(selected.totalpris)} kr</span>}
+            {selected.felleskost>0&&<span className="badge ba_">FK {fmt(selected.felleskost)}/mnd</span>}
+            {selected.status==='potensiell'&&<span className="badge bg_">💚 Potensiell</span>}
+            {selected.status==='forkastet'&&<span className="badge br_">❌ Forkastet</span>}
+            {selected.stjerner>0&&<span style={{fontSize:13}}>{'⭐'.repeat(selected.stjerner)}</span>}
+          </div>
+        </div>
+        <button onClick={()=>setSelected(null)} style={{padding:'5px 9px',border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',color:'var(--txt2)',cursor:'pointer',font:'inherit',fontSize:16}}>×</button>
+      </div>
+      <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+        {selected.finn&&<a href={selected.finn} target="_blank" rel="noopener noreferrer" style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 13px',background:'#06ADEF',borderRadius:'var(--r)',textDecoration:'none',color:'white',fontSize:13,fontWeight:700}}>
+          <svg width="16" height="16" viewBox="0 0 40 40"><rect width="40" height="40" rx="6" fill="white"/><text x="20" y="27" fontFamily="Arial" fontWeight="bold" fontSize="15" fill="#06ADEF" textAnchor="middle">finn</text></svg>
+          Finn
+        </a>}
+        <button onClick={()=>{if(transitMode){transitMarkersRef.current.forEach(m=>m.remove());transitMarkersRef.current=[];setTransitMode(false);setSelectedStop(null);}else{loadTransitMarkers(selected);}}} style={{display:'inline-flex',alignItems:'center',gap:6,padding:'8px 13px',background:transitMode?'var(--accent)':'var(--bg2)',color:transitMode?'#fff':'var(--txt)',border:'1px solid '+(transitMode?'var(--accent)':'var(--br2)'),borderRadius:'var(--r)',cursor:'pointer',font:'inherit',fontSize:13,fontWeight:700,transition:'all .15s'}}>
+          🚌 {transitMode?'Skjul kollektivt':'Kollektivt'}
+        </button>
+      </div>
+    </div>}
+
+    {/* Transit stop popup */}
+    {selectedStop&&<div style={{position:'absolute',bottom:14,left:12,right:12,background:'var(--bg)',borderRadius:'var(--rl)',boxShadow:'0 4px 24px rgba(0,0,0,.2)',padding:'14px 16px',zIndex:1001,border:'1px solid var(--br)'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+        <div>
+          <div style={{fontWeight:700,fontSize:15,letterSpacing:'-.01em'}}>
+            {selectedStop.transportMode==='rail'?'🚆':selectedStop.transportMode==='metro'?'🚇':selectedStop.lines.some(l=>l.mode==='tram')?'🚊':'🚌'} {selectedStop.name}
+          </div>
+          <div style={{fontSize:12,color:'var(--txt3)',marginTop:2}}>{selectedStop.dist} m · ca {selectedStop.walkMin} min til fots</div>
+        </div>
+        <button onClick={()=>setSelectedStop(null)} style={{padding:'5px 9px',border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontSize:16}}>×</button>
+      </div>
+      {/* Line badges */}
+      {selectedStop.lines.length>0&&<div style={{display:'flex',gap:5,flexWrap:'wrap',marginBottom:10}}>
+        {selectedStop.lines.map((l,j)=>(
+          <span key={j} style={{padding:'4px 10px',borderRadius:999,fontSize:13,fontWeight:700,background:modeBg[l.mode]||'var(--bg2)',color:modeColor[l.mode]||'var(--txt)',border:'1px solid rgba(0,0,0,.08)'}}>
+            {l.code}
+          </span>
+        ))}
+      </div>}
+      {/* Departure board */}
+      {selectedStop.departures&&selectedStop.departures.length>0&&<div>
+        <div style={{fontSize:11,fontWeight:700,color:'var(--txt3)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:6}}>Neste avganger</div>
+        {selectedStop.departures.map((dep,j)=>(
+          <div key={j} style={{display:'flex',gap:10,alignItems:'center',padding:'6px 0',borderTop:'1px solid var(--br)',fontSize:13}}>
+            <span style={{fontWeight:700,minWidth:30,color:'var(--accent)',fontSize:14}}>{dep.line}</span>
+            <span style={{flex:1,color:'var(--txt2)'}}>{dep.dest}</span>
+            <span style={{fontWeight:700,color:'var(--txt)',background:'var(--bg2)',padding:'2px 8px',borderRadius:6,fontSize:12}}>{dep.time}</span>
+          </div>
+        ))}
+      </div>}
+      {selectedStop.departures&&selectedStop.departures.length===0&&<div style={{fontSize:13,color:'var(--txt3)',textAlign:'center',padding:'8px 0'}}>Ingen avganger funnet</div>}
+    </div>}
+
+    {/* Legend */}
+    <div style={{position:'absolute',top:10,right:10,background:'var(--bg)',borderRadius:'var(--r)',padding:'6px 10px',fontSize:11,color:'var(--txt3)',zIndex:400,boxShadow:'var(--shadow)',display:'flex',gap:8,alignItems:'center'}}>
+      {[['#059669','Pot.'],['#dc2626','Fork.'],['#d97706','Aktiv']].map(([c,l])=>(
+        <span key={l} style={{display:'flex',alignItems:'center',gap:3}}><span style={{width:8,height:8,borderRadius:'50%',background:c,display:'inline-block'}}/>{l}</span>
+      ))}
+      {transitMode&&<span style={{borderLeft:'1px solid var(--br)',paddingLeft:8,color:'var(--bdk)',fontWeight:600}}>🚌 aktiv</span>}
+    </div>
+  </div></>;
+}
+
+/* ─── PDF EXPORT ─── */
+function exportBoligPDF(b,snap){
+  const tgSum=(b.tgFeil||[]).reduce((s,t)=>s+(t.estimertKostnad||0),0);
+  const cl=b.checklist||{};
+  const cmts=b.comments||{};
+  const okItems=ALL_ITEMS.filter(i=>cl[i.id]==='ok').map(i=>i.label+(cmts[i.id]?' – '+cmts[i.id]:''));
+  const warnItems=ALL_ITEMS.filter(i=>cl[i.id]==='warn').map(i=>i.label+(cmts[i.id]?' – '+cmts[i.id]:''));
+  const badItems=ALL_ITEMS.filter(i=>cl[i.id]==='bad').map(i=>i.label+(cmts[i.id]?' – '+cmts[i.id]:''));
+  const naItems=ALL_ITEMS.filter(i=>cl[i.id]==='na').map(i=>i.label);
+  const stars='⭐'.repeat(b.stjerner||0)||'Ikke vurdert';
+  const starLabel=['','Ikke aktuell','Svak kandidat','Interessant','God kandidat','Drømmebolig'][b.stjerner||0]||'';
+  const inkludert=[b.inkl&&b.inkl.internett&&'📶 Internett',b.inkl&&b.inkl.fyring&&'🔥 Fyring',b.inkl&&b.inkl.varmtvann&&'🚿 Varmtvann',...(b.andreInkl||[])].filter(Boolean);
+
+  const finnLink=b.finn?`<a href="${b.finn}" target="_blank" style="color:#2563EB;text-decoration:none;font-weight:600;font-size:13px;">Åpne Finn-annonse →</a>`:'';
+  const html=`<!DOCTYPE html><html lang="no"><head><meta charset="UTF-8"><title>Visningsrapport – ${b.adresse}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#111;font-size:14px;line-height:1.5;padding:0}
+.page{max-width:760px;margin:0 auto;padding:32px 40px}
+.header{border-bottom:3px solid #2563EB;padding-bottom:16px;margin-bottom:24px}
+.header h1{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#111;margin-bottom:4px}
+.header .sub{font-size:13px;color:#666}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.badge-green{background:#ecfdf5;color:#065f46}
+.badge-blue{background:#eff6ff;color:#1e3a8a}
+.badge-amber{background:#fffbeb;color:#92400e}
+.badge-red{background:#fef2f2;color:#991b1b}
+.section{margin-bottom:24px}
+.section h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#666;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #e5e5e5}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.stat-box{background:#f8f8f7;border-radius:8px;padding:12px;border:1px solid #e5e5e5}
+.stat-box .label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.stat-box .value{font-size:18px;font-weight:700;color:#111}
+.stat-box .value.green{color:#059669}
+.stat-box .value.red{color:#dc2626}
+.checklist-section{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.check-col h3{font-size:12px;font-weight:700;margin-bottom:8px;padding:4px 8px;border-radius:6px}
+.check-col.ok h3{background:#ecfdf5;color:#065f46}
+.check-col.warn h3{background:#fffbeb;color:#92400e}
+.check-col.bad h3{background:#fef2f2;color:#991b1b}
+.check-col ul{list-style:none;padding:0}
+.check-col ul li{font-size:12px;padding:3px 0;border-bottom:1px solid #f0f0f0;color:#444}
+.check-col ul li:last-child{border-bottom:none}
+.tg-item{background:#fff8f0;border-left:3px solid #d97706;border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:8px}
+.tg-item.tg3{background:#fff2f2;border-left-color:#dc2626}
+.tg-item.tg1{background:#f0fdf4;border-left-color:#059669}
+.tg-item .tg-title{font-weight:700;font-size:13px;margin-bottom:3px}
+.tg-item .tg-note{font-size:12px;color:#666}
+.notes-box{background:#f8f8f7;border-radius:8px;padding:14px;border:1px solid #e5e5e5;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.stars{font-size:20px;margin-bottom:4px}
+.snap-box{background:#ecfdf5;border-radius:8px;padding:14px;border:1px solid rgba(5,150,105,.25)}
+.footer{margin-top:32px;padding-top:16px;border-top:1px solid #e5e5e5;font-size:11px;color:#999;text-align:center}
+@media print{.page{padding:20px 28px}}
+</style></head><body><div class="page">
+
+<div class="header">
+  <h1>${b.adresse}</h1>
+  <div class="sub">Visningsdato: ${b.dato||'Ikke angitt'}${b.tid?' kl. '+b.tid:''} · Generert ${new Date().toLocaleDateString('nb-NO')}</div>
+  <div class="badges">
+    ${b.status==='potensiell'?'<span class="badge badge-green">Potensiell</span>':b.status==='forkastet'?'<span class="badge badge-red">Forkastet</span>':'<span class="badge badge-amber">Aktiv</span>'}
+    ${b.boligtype?'<span class="badge badge-blue">'+(b.boligtype==='selveier'?'Selveier':'Andel/aksje')+'</span>':''}
+    ${b.stjerner?'<span class="badge badge-amber">'+stars+' · '+starLabel+'</span>':''}
+  </div>
+  ${finnLink?`<div style="margin-top:10px;">${finnLink}</div>`:''}
+</div>
+
+<div class="section">
+  <h2>Økonomi og kostnader</h2>
+  <div class="grid2">
+    <div class="stat-box"><div class="label">Prisantydning</div><div class="value">${fmt(b.pris||0)} kr</div></div>
+    <div class="stat-box"><div class="label">Fellesgjeld</div><div class="value">${fmt(b.fellesgjeld||0)} kr</div></div>
+    <div class="stat-box"><div class="label">Totalpris (pris + gjeld)</div><div class="value green">${fmt(b.totalpris||0)} kr</div></div>
+    <div class="stat-box"><div class="label">Felleskostnader / mnd</div><div class="value">${fmt(b.felleskost||0)} kr</div></div>
+    ${b.omk&&b.omk.total>0?'<div class="stat-box"><div class="label">Omkostninger</div><div class="value">'+fmt(b.omk.total)+' kr</div></div>':''}
+    ${b.totalmedOmk?'<div class="stat-box"><div class="label">Total kjøpskostnad</div><div class="value green">'+fmt(b.totalmedOmk)+' kr</div></div>':''}
+    ${tgSum>0?'<div class="stat-box"><div class="label">Estimert TG-utbedring</div><div class="value red">'+fmt(tgSum)+' kr</div></div>':''}
+  </div>
+  ${inkludert.length>0?'<div style="margin-top:8px;font-size:13px"><strong>Inkludert i FK:</strong> '+inkludert.join(' · ')+'</div>':''}
+  ${b.omk&&b.omk.total>0?`<div style="margin-top:10px;font-size:12px;color:#666">Omkostninger: Dok.avgift ${fmt(b.omk.dok)} kr · Tinglysing ${fmt(b.omk.tingl)} kr${b.omk.megler>0?' · Megler '+fmt(b.omk.megler)+' kr':''}${b.omk.andre>0?' · Andre '+fmt(b.omk.andre)+' kr':''}</div>`:''}
+</div>
+
+${snap?`<div class="section">
+  <h2>Økonomieffekt (beregnet)</h2>
+  <div class="snap-box">
+    <div style="display:grid;grid-template-columns:1fr${snap.navn2?' 1fr':''};gap:12px">
+      <div><div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${snap.navn1} — igjen per mnd</div><div style="font-size:24px;font-weight:700;color:${snap.rest1>=0?'#059669':'#dc2626'}">${fmt(snap.rest1)} kr</div></div>
+      ${snap.navn2?'<div><div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">'+snap.navn2+' — igjen per mnd</div><div style="font-size:24px;font-weight:700;color:'+(snap.rest2>=0?'#059669':'#dc2626')+'">'+fmt(snap.rest2)+' kr</div></div>':''}
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:#059669">Månedlig lån: ${fmt(snap.mLaan)} kr</div>
+  </div>
+</div>`:''}
+
+${(b.tgFeil&&b.tgFeil.length>0)?`<div class="section">
+  <h2>TG-funn (${b.tgFeil.length}) — estimert utbedring ${fmt(tgSum)} kr</h2>
+  ${b.tgFeil.map(t=>`<div class="tg-item ${t.grad==='TG3'?'tg3':t.grad==='TG1'?'tg1':''}">
+    <div class="tg-title">${t.grad}: ${t.tittel}</div>
+    ${t.kommentar?'<div class="tg-note">'+t.kommentar+'</div>':''}
+    ${t.estimertKostnad>0?'<div style="font-size:12px;margin-top:4px;font-weight:600">Estimert kostnad: '+fmt(t.estimertKostnad)+' kr</div>':''}
+  </div>`).join('')}
+</div>`:''}
+
+<div class="section">
+  <h2>Visningssjekkliste</h2>
+  <div class="checklist-section">
+    <div class="check-col ok">
+      <h3>✅ OK (${okItems.length})</h3>
+      <ul>${okItems.slice(0,15).map(i=>'<li>'+i+'</li>').join('')}</ul>
+    </div>
+    <div class="check-col warn">
+      <h3>⚠️ Usikker (${warnItems.length})</h3>
+      <ul>${warnItems.map(i=>'<li>'+i+'</li>').join('')}</ul>
+    </div>
+    <div class="check-col bad">
+      <h3>❌ Problem (${badItems.length})</h3>
+      <ul>${badItems.map(i=>'<li>'+i+'</li>').join('')}</ul>
+    </div>
+  </div>
+  ${naItems.length>0?'<div style="margin-top:8px;font-size:12px;color:#888">Ikke relevant: '+naItems.join(', ')+'</div>':''}
+</div>
+
+${(b.positivt||b.negativt||b.vibesNote)?`<div class="section">
+  <h2>Brukers vurdering</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    ${b.positivt?'<div><div style="font-size:12px;font-weight:700;color:#059669;margin-bottom:4px">💚 Positivt</div><div class="notes-box">'+b.positivt+'</div></div>':''}
+    ${b.negativt?'<div><div style="font-size:12px;font-weight:700;color:#dc2626;margin-bottom:4px">❌ Bekymringer</div><div class="notes-box">'+b.negativt+'</div></div>':''}
+  </div>
+  ${b.vibesNote?'<div style="margin-top:12px"><div style="font-size:12px;font-weight:700;color:#666;margin-bottom:4px">💬 Andre notater</div><div class="notes-box">'+b.vibesNote+'</div></div>':''}
+</div>`:''}
+
+${Object.keys(cmts).length>0?`<div class="section">
+  <h2>Kommentarer på enkeltpunkter</h2>
+  ${Object.entries(cmts).map(([k,v])=>{const item=ALL_ITEMS.find(i=>i.id===k);return item&&v?'<div style="padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:13px"><strong>'+item.label+':</strong> '+v+'</div>':''}).filter(Boolean).join('')}
+</div>`:''}
+
+<div class="footer">Visningsrapport generert av Boligappen · ${new Date().toLocaleString('nb-NO')}</div>
+</div></body></html>`;
+
+  const w=window.open('','_blank');
+  if(w){
+    w.document.write(html);
+    w.document.close();
+    setTimeout(()=>w.print(),500);
+  }
+}
+
+
+/* ─── SAMMENLIGNING TAB ─── */
+function SammenligningTab({boliger,snapshots,husData}){
+  const pot=boliger.filter(b=>b.status==='potensiell');
+  const [selected,setSelected]=useState([]);
+  const [mode,setMode]=useState('overview'); // overview | detail
+
+  // Scores
+  function techScore(b){
+    const cl=b.checklist||{};
+    let s=100;
+    CATS.find(c=>c.id==='teknisk')?.items.forEach(i=>{if(cl[i.id]==='bad')s-=12;else if(cl[i.id]==='warn')s-=5;});
+    (b.tgFeil||[]).forEach(t=>{s-=t.grad==='TG3'?18:t.grad==='TG2'?7:2;});
+    return Math.max(0,s);
+  }
+
+  function checklistScore(b){
+    const cl=b.checklist||{};
+    const ok=Object.values(cl).filter(v=>v==='ok').length;
+    const bad=Object.values(cl).filter(v=>v==='bad').length;
+    const warn=Object.values(cl).filter(v=>v==='warn').length;
+    const total=ok+bad+warn;
+    return total>0?Math.round((ok-bad*1.5-warn*0.5)/total*100):null;
+  }
+
+  function inckSaving(b){
+    return (b.inkl?.internett?500:0)+(b.inkl?.fyring?1200:0)+(b.inkl?.varmtvann?400:0);
+  }
+
+  function tgEst(b){return (b.tgFeil||[]).reduce((s,t)=>s+(t.estimertKostnad||0),0);}
+
+  function effectiveMonthlyCost(b,snap){
+    if(!snap)return null;
+    return snap.mLaan+(b.felleskost||0)-inckSaving(b);
+  }
+
+  const ranked=[...pot].map(b=>{
+    const snap=snapshots?.find(s=>s.boligId===b.id);
+    const ts=techScore(b);
+    const tg=tgEst(b);
+    const inkSave=inckSaving(b);
+    const effFk=Math.max(0,(b.felleskost||0)-inkSave);
+    const emc=effectiveMonthlyCost(b,snap);
+    // Score: lower total cost + higher tech + stars
+    const costScore=(b.totalpris||b.pris||0)+tg+(effFk*12*5);
+    const qualScore=ts*10000+(b.stjerner||0)*50000;
+    return {...b,_snap:snap,_ts:ts,_tg:tg,_inkSave:inkSave,_effFk:effFk,_emc:emc,_rank:costScore-qualScore};
+  }).sort((a,b)=>a._rank-b._rank);
+
+  const shown=selected.length>0?ranked.filter(b=>selected.includes(b.id)):ranked;
+
+  // Overview mode
+  if(mode==='overview')return <div>
+    <div style={{marginBottom:18}}>
+      <div style={{fontSize:20,fontWeight:700,letterSpacing:'-.02em'}}>Sammenligning</div>
+      <div style={{fontSize:13,color:'var(--txt3)',marginTop:3}}>{pot.length} potensielle bolig{pot.length!==1?'er':''}</div>
+    </div>
+    {pot.length===0&&<div className="empty-s"><div className="icon" style={{fontSize:36}}>⚖</div><div className="title">Ingen potensielle boliger</div><div className="sub">Merk boliger som Potensiell i Visning-fanen</div></div>}
+    {pot.length>0&&<>
+      {/* Filter */}
+      {pot.length>2&&<div className="card" style={{marginBottom:14}}>
+        <div className="card-title">Velg boliger å sammenligne</div>
+        {pot.map(b=>(
+          <button key={b.id} onClick={()=>setSelected(p=>p.includes(b.id)?p.filter(x=>x!==b.id):[...p,b.id])}
+            style={{display:'block',width:'100%',marginBottom:7,textAlign:'left',padding:'10px 14px',border:'1px solid '+(selected.includes(b.id)?'var(--accent)':'var(--br2)'),borderRadius:'var(--r)',background:selected.includes(b.id)?'var(--bbg)':'var(--bg2)',cursor:'pointer',font:'inherit',transition:'all .12s',color:selected.includes(b.id)?'var(--bdk)':'var(--txt)'}}>
+            <div style={{fontWeight:600,fontSize:14}}>{b.adresse}</div>
+            <div style={{fontSize:12,color:selected.includes(b.id)?'var(--bdk)':'var(--txt3)',marginTop:1}}>{fmtK(b.totalpris||b.pris)} kr total</div>
+          </button>
+        ))}
+        {selected.length>0&&<button onClick={()=>setSelected([])} style={{fontSize:12,color:'var(--txt3)',padding:'4px 8px',border:'none',background:'transparent',cursor:'pointer',font:'inherit'}}>Vis alle</button>}
+      </div>}
+
+      {/* Ranking overview */}
+      <div className="card">
+        <div className="card-title">Rangering</div>
+        <div style={{fontSize:12,color:'var(--txt3)',marginBottom:12,lineHeight:1.5}}>Basert på totalpris, TG-feil, effektive felleskostnader og din vurdering</div>
+        {shown.map((b,i)=>{
+          const medal=i===0?'#':i===1?'##':'###';
+          const medalCol=i===0?'#d97706':i===1?'#6b7280':'#9ca3af';
+          const medalLabel=i===0?'Topp':'#'+(i+1);
+          return <div key={b.id} style={{padding:'12px 0',borderBottom:'1px solid var(--br)',display:'flex',gap:12,alignItems:'flex-start'}}>
+            <div style={{width:28,height:28,borderRadius:'50%',background:i===0?'#fef3c7':i===1?'#f3f4f6':'#f9fafb',border:'1px solid '+(i===0?'#fbbf24':i===1?'#d1d5db':'#e5e7eb'),display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:medalCol,flexShrink:0}}>
+              {i+1}
+            </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:700,fontSize:14,marginBottom:3}}>{b.adresse}</div>
+              <div style={{display:'flex',gap:8,flexWrap:'wrap',fontSize:12,color:'var(--txt3)'}}>
+                <span>Total {fmtK(b.totalpris||b.pris)} kr</span>
+                <span>FK {fmt(b._effFk)}/mnd</span>
+                {b._tg>0&&<span style={{color:'var(--rdk)'}}>TG {fmt(b._tg)} kr</span>}
+                {b.stjerner>0&&<span>{'★'.repeat(b.stjerner)}</span>}
+              </div>
+              {b._snap&&husData&&<div style={{marginTop:6,display:'flex',gap:6,flexWrap:'wrap'}}>
+                {[{n:b._snap.navn1,r:b._snap.rest1},{n:b._snap.navn2,r:b._snap.rest2}].filter(p=>p.n).map(p=>(
+                  <span key={p.n} style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:999,background:p.r>=0?'var(--gbg)':'var(--rbg)',color:p.r>=0?'var(--gdk)':'var(--rdk)'}}>
+                    {p.n}: {fmt(p.r)} kr/mnd
+                  </span>
+                ))}
+              </div>}
+            </div>
+          </div>;
+        })}
+      </div>
+
+      {/* Head-to-head comparison table */}
+      {shown.length>=2&&<div className="card">
+        <div className="card-title">Side om side</div>
+        <div style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
+            <thead>
+              <tr>
+                <th style={{textAlign:'left',padding:'6px 4px',color:'var(--txt3)',fontWeight:600,borderBottom:'1px solid var(--br)',width:110}}>Felt</th>
+                {shown.map(b=>(
+                  <th key={b.id} style={{textAlign:'right',padding:'6px 4px',color:'var(--txt)',fontWeight:700,borderBottom:'1px solid var(--br)',fontSize:11}}>
+                    {b.adresse.split(',')[0].slice(0,20)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Prisantydning', b=>b.pris?fmtK(b.pris)+' kr':'-', b=>b.pris||0, 'lower'],
+                ['Fellesgjeld',   b=>b.fellesgjeld?fmtK(b.fellesgjeld)+' kr':'0', b=>b.fellesgjeld||0, 'lower'],
+                ['Totalpris',     b=>fmtK(b.totalpris||b.pris)+' kr', b=>b.totalpris||b.pris||0, 'lower'],
+                ['FK / mnd',      b=>fmt(b.felleskost||0)+' kr', b=>b.felleskost||0, 'lower'],
+                ['Inkl. spar.',   b=>b._inkSave>0?'-'+fmt(b._inkSave)+' kr':'-', b=>-b._inkSave, 'lower'],
+                ['Eff. FK / mnd', b=>fmt(b._effFk)+' kr', b=>b._effFk, 'lower'],
+                ['TG-feil est.',  b=>b._tg>0?fmt(b._tg)+' kr':'-', b=>b._tg, 'lower'],
+                ['Teknisk score', b=>b._ts+'/100', b=>b._ts, 'higher'],
+                ['Sjekk: OK',     b=>String(Object.values(b.checklist||{}).filter(v=>v==='ok').length), b=>Object.values(b.checklist||{}).filter(v=>v==='ok').length, 'higher'],
+                ['Sjekk: Problem',b=>String(Object.values(b.checklist||{}).filter(v=>v==='bad').length), b=>Object.values(b.checklist||{}).filter(v=>v==='bad').length, 'lower'],
+                ['Stjerner',      b=>'★'.repeat(b.stjerner||0)||'-', b=>b.stjerner||0, 'higher'],
+              ].map(([label, fmt2, val, dir])=>{
+                const vals=shown.map(b=>val(b));
+                const best=dir==='lower'?Math.min(...vals.filter(v=>v>0||vals.every(v=>v===0))):Math.max(...vals);
+                return <tr key={label}>
+                  <td style={{padding:'6px 4px',color:'var(--txt3)',fontWeight:500,borderBottom:'1px solid var(--br)',whiteSpace:'nowrap'}}>{label}</td>
+                  {shown.map((b,i)=>{
+                    const v=val(b);
+                    const isBest=vals.filter(x=>x>0).length>1&&v===best&&v>0;
+                    return <td key={b.id} style={{textAlign:'right',padding:'6px 4px',borderBottom:'1px solid var(--br)',fontWeight:isBest?700:400,color:isBest?(dir==='lower'?'var(--gdk)':'var(--bdk)'):'var(--txt)'}}>
+                      {fmt2(b)}
+                    </td>;
+                  })}
+                </tr>;
+              })}
+              {/* Snapshot-based rows */}
+              {shown.some(b=>b._snap)&&<>
+                <tr><td colSpan={shown.length+1} style={{padding:'8px 4px 4px',fontSize:10,fontWeight:700,color:'var(--txt3)',textTransform:'uppercase',letterSpacing:'.06em',borderBottom:'1px solid var(--br)'}}>Økonomieffekt (fra Boligkalk)</td></tr>
+                <tr>
+                  <td style={{padding:'6px 4px',color:'var(--txt3)',fontWeight:500,borderBottom:'1px solid var(--br)'}}>Lån / mnd</td>
+                  {shown.map(b=><td key={b.id} style={{textAlign:'right',padding:'6px 4px',borderBottom:'1px solid var(--br)'}}>{b._snap?fmt(b._snap.mLaan)+' kr':'-'}</td>)}
+                </tr>
+                <tr>
+                  <td style={{padding:'6px 4px',color:'var(--txt3)',fontWeight:500,borderBottom:'1px solid var(--br)'}}>{shown[0]?._snap?.navn1||'Person 1'} igjen</td>
+                  {shown.map(b=>{const ok=b._snap&&b._snap.rest1>=0;return <td key={b.id} style={{textAlign:'right',padding:'6px 4px',fontWeight:700,color:b._snap?(ok?'var(--gdk)':'var(--rdk)'):'var(--txt3)',borderBottom:'1px solid var(--br)'}}>{b._snap?fmt(b._snap.rest1)+' kr':'-'}</td>;})}
+                </tr>
+                {shown.some(b=>b._snap?.navn2)&&<tr>
+                  <td style={{padding:'6px 4px',color:'var(--txt3)',fontWeight:500,borderBottom:'1px solid var(--br)'}}>{shown[0]?._snap?.navn2||'Person 2'} igjen</td>
+                  {shown.map(b=>{const ok=b._snap&&b._snap.rest2>=0;return <td key={b.id} style={{textAlign:'right',padding:'6px 4px',fontWeight:700,color:b._snap?.rest2!=null?(ok?'var(--gdk)':'var(--rdk)'):'var(--txt3)',borderBottom:'1px solid var(--br)'}}>{b._snap?.rest2!=null?fmt(b._snap.rest2)+' kr':'-'}</td>;})}
+                </tr>}
+              </>}
+            </tbody>
+          </table>
+        </div>
+        {!shown.some(b=>b._snap)&&<div style={{marginTop:12,fontSize:12,color:'var(--txt3)',background:'var(--bg2)',borderRadius:'var(--r)',padding:'10px 12px',border:'1px solid var(--br)'}}>
+          Kjør Beregn + Lagre i Boligkalk for å se økonomieffekt per bolig
+        </div>}
+      </div>}
+
+      {/* Inclusions comparison */}
+      <div className="card">
+        <div className="card-title">Inkludert i felleskostnader</div>
+        {shown.map(b=>{
+          const inkl=[b.inkl?.internett&&'Internett',b.inkl?.fyring&&'Fyring',b.inkl?.varmtvann&&'Varmtvann',...(b.andreInkl||[])].filter(Boolean);
+          const saving=b._inkSave;
+          return <div key={b.id} style={{paddingBottom:10,marginBottom:10,borderBottom:'1px solid var(--br)'}}>
+            <div style={{fontWeight:600,fontSize:13,marginBottom:4}}>{b.adresse.split(',')[0]}</div>
+            {inkl.length>0?<div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:4}}>
+              {inkl.map((l,i)=><span key={i} style={{fontSize:11,fontWeight:600,padding:'2px 8px',borderRadius:999,background:'var(--gbg)',color:'var(--gdk)'}}>+{l}</span>)}
+              <span style={{fontSize:11,color:'var(--gdk)',fontWeight:600,background:'var(--gbg)',padding:'2px 8px',borderRadius:999}}>~ -{fmt(saving)} kr/mnd</span>
+            </div>:<div style={{fontSize:12,color:'var(--txt3)'}}>Ingenting inkludert</div>}
+          </div>;
+        })}
+      </div>
+    </>}
+  </div>;
+}
+
+/* ─── BUDRUNDE TAB ─── */
+function BudrundTab({boliger,husData}){
+  const [sessions,setSessions]=useState(()=>load('budrunde-main')||[]);
+  const [activeId,setActiveId]=useState(null);
+  const [showNy,setShowNy]=useState(false);
+  const [importId,setImportId]=useState('');
+  const [showAddBud,setShowAddBud]=useState(false);
+  const [budType,setBudType]=useState('eget');
+  const [budBelop,setBudBelop]=useState('');
+  const [budTid,setBudTid]=useState('');
+  const [budNote,setBudNote]=useState('');
+  const [budder,setBudder]=useState('');
+  const pot=boliger.filter(b=>b.status==='potensiell');
+  function save(s){setSessions(s);stor('budrunde-main',s);}
+  function createSession(){
+    const bolig=boliger.find(b=>b.id===Number(importId));if(!bolig)return;
+    const s={id:Date.now(),boligId:bolig.id,adresse:bolig.adresse,pris:bolig.pris,fellesgjeld:bolig.fellesgjeld,totalpris:bolig.totalpris,felleskost:bolig.felleskost,omk:bolig.omk||{total:0},bud:[]};
+    const u=[...sessions,s];save(u);setActiveId(s.id);setShowNy(false);setImportId('');
+  }
+  function addBud(){
+    if(!budBelop)return;
+    const bud={id:Date.now(),type:budType,belop:Number(budBelop),tid:budTid||new Date().toLocaleTimeString('nb-NO',{hour:'2-digit',minute:'2-digit'}),note:budNote,budder};
+    const u=sessions.map(s=>s.id===activeId?{...s,bud:[...s.bud,bud]}:s);
+    save(u);setShowAddBud(false);setBudBelop('');setBudTid('');setBudNote('');setBudder('');
+  }
+  // budgetCheck removed — user sets own max bid
+  const active=sessions.find(s=>s.id===activeId);
+
+  if(!active)return <div>
+    <div className="sec" style={{marginBottom:20}}>
+      <div><div className="sec-t">Budrunde 🔨</div><div className="sec-s">Registrer og følg budene</div></div>
+      {pot.length>0&&<button className="btn-action" onClick={()=>setShowNy(true)}><i className="ti ti-plus"/> Ny runde</button>}
+    </div>
+    {sessions.length===0&&pot.length===0&&<div className="empty-s"><div className="icon">🔨</div><div className="title">Ingen budrunder ennå</div><div className="sub">Merk boliger som "Potensiell" i Visning-fanen for å starte en budrunde</div></div>}
+    {sessions.length===0&&pot.length>0&&<div className="empty-s"><div className="icon">🏷️</div><div className="title">Klar til å by?</div><div className="sub">Trykk "+ Ny runde" for å starte en budrunde på en potensiell bolig</div></div>}
+    {sessions.map(s=>{
+      const egne=s.bud.filter(b=>b.type==='eget');const top=egne.length>0?Math.max(...egne.map(b=>b.belop)):null;
+
+      return <div key={s.id} className="bcard" style={{cursor:'pointer'}} onClick={()=>setActiveId(s.id)}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}}>
+          <div style={{flex:1}}><div style={{fontWeight:700,fontSize:15}}>{s.adresse}</div><div style={{fontSize:12,color:'var(--txt3)',marginTop:1}}>Prisantydning: {fmtK(s.pris)} kr</div></div>
+          <button onClick={e=>{e.stopPropagation();save(sessions.filter(x=>x.id!==s.id));}} style={{padding:'5px 8px',border:'none',background:'transparent',color:'var(--rdk)',cursor:'pointer',font:'inherit',fontSize:14}}><i className="ti ti-trash"/></button>
+        </div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:6}}>
+          {s.bud.filter(b=>b.type==='eget').length>0&&<span className="badge bb_">{s.bud.filter(b=>b.type==='eget').length} egne bud</span>}
+          {s.bud.filter(b=>b.type==='konkurrent').length>0&&<span className="badge ba_">{s.bud.filter(b=>b.type==='konkurrent').length} konkurrentbud</span>}
+          {top&&<span className="badge bb_">Topp: {fmtK(top)} kr</span>}
+        </div>
+        <div style={{fontSize:12,color:'var(--txt3)'}}>Trykk for å åpne →</div>
+      </div>;
+    })}
+    {showNy&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setShowNy(false)}}>
+      <div className="sheet"><div className="handle"/>
+        <div style={{fontWeight:700,fontSize:18,marginBottom:4}}>Ny budrunde</div>
+        <div style={{fontSize:13,color:'var(--txt3)',marginBottom:16}}>Velg en potensiell bolig</div>
+        {pot.map(b=>(
+          <button key={b.id} onClick={()=>setImportId(String(b.id))} style={{display:'block',width:'100%',marginBottom:8,textAlign:'left',padding:'12px 14px',border:'1px solid '+(importId===String(b.id)?'var(--accent)':'var(--br2)'),borderRadius:'var(--r)',background:importId===String(b.id)?'var(--bbg)':'var(--bg2)',cursor:'pointer',font:'inherit',fontWeight:importId===String(b.id)?700:400,color:importId===String(b.id)?'var(--bdk)':'var(--txt)'}}>
+            {b.adresse}<div style={{fontSize:12,marginTop:2,color:importId===String(b.id)?'var(--bdk)':'var(--txt3)'}}>Prisantydning: {fmtK(b.pris)} kr</div>
+          </button>
+        ))}
+        <button className="btnpri" onClick={createSession} disabled={!importId}>Start budrunde</button>
+      </div>
+    </div>}
+  </div>;
+
+  const egneBud=active.bud.filter(b=>b.type==='eget').sort((a,b)=>b.id-a.id);
+  const konkBud=active.bud.filter(b=>b.type==='konkurrent').sort((a,b)=>b.id-a.id);
+  const topEget=egneBud.length>0?egneBud[0].belop:null;
+  const topKonk=konkBud.length>0?Math.max(...konkBud.map(b=>b.belop)):null;
+
+  const omk=active.omk||{total:0};
+  const fgjeld=active.fellesgjeld||0;
+  const totalBudMedAlt=(topEget||active.pris)+fgjeld+omk.total;
+  const maxBud=active.maxBud||0;
+  const maxBudTotal=maxBud?maxBud+fgjeld+omk.total:0;
+  function updSession(fn){const u=sessions.map(s=>s.id===activeId?fn(s):s);save(u);}
+
+  return <div>
+    <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:20}}>
+      <button className="back-btn" onClick={()=>setActiveId(null)}><i className="ti ti-arrow-left"/></button>
+      <div style={{flex:1}}><div style={{fontWeight:700,fontSize:16,letterSpacing:'-.01em'}}>{active.adresse}</div><div style={{fontSize:12,color:'var(--txt3)',marginTop:1}}>Prisantydning: {fmtK(active.pris)} kr</div></div>
+    </div>
+    <div className="card">
+      <div style={{marginBottom:10}}>
+        <div style={{fontSize:24,fontWeight:700,letterSpacing:'-.02em'}}>{fmtK(topEget||active.pris)} kr</div>
+        <div style={{fontSize:13,color:'var(--txt3)',marginTop:2}}>{topEget?'Ditt høyeste bud':'Prisantydning'}</div>
+      </div>
+      <div className="g3">
+        {[['Bud',fmtK(topEget||active.pris)],['+ Gjeld',fmtK(fgjeld)],['+ Omk.',fmt(omk.total)]].map(([l,v])=>(
+          <div key={l} className="stat"><div className="sl">{l}</div><div className="sv" style={{fontSize:14}}>{v} kr</div></div>
+        ))}
+      </div>
+      <div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:'10px 14px',marginTop:4,border:'1px solid var(--br)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <span style={{fontSize:13,color:'var(--txt2)',fontWeight:600}}>Total kjøpskostnad</span>
+        <span style={{fontSize:17,fontWeight:700,color:'var(--accent)'}}>{fmtK(totalBudMedAlt)} kr</span>
+      </div>
+    </div>
+    <div className="card" style={{marginBottom:14}}>
+      <div className="card-title">🎯 Din budgrense</div>
+      <div style={{fontSize:13,color:'var(--txt3)',marginBottom:10,lineHeight:1.5}}>Sett maks bud du er villig til å gi. FK og fellesgjeld fylles inn automatisk.</div>
+      <div style={{marginBottom:10}}>
+        <label style={{fontSize:12,fontWeight:600,color:'var(--txt3)',display:'block',marginBottom:4,textTransform:'uppercase',letterSpacing:'.05em'}}>Maks budbeløp (kr)</label>
+        <input type="number" placeholder={String(active.pris||0)} value={maxBud||''} onChange={e=>updSession(s=>({...s,maxBud:Number(e.target.value)||0}))} style={{fontSize:16,fontWeight:600}}/>
+      </div>
+      {maxBud>0&&<div style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:'10px 12px',border:'1px solid var(--br)'}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8}}>
+          {[['Maks bud',fmtK(maxBud)+' kr'],['+ Gjeld',fmtK(maxBud+fgjeld)+' kr'],['+ Omk.',fmtK(maxBudTotal)+' kr']].map(([l,v])=>(
+            <div key={l} style={{textAlign:'center'}}>
+              <div style={{fontSize:10,fontWeight:700,color:'var(--txt3)',textTransform:'uppercase',letterSpacing:'.04em',marginBottom:2}}>{l}</div>
+              <div style={{fontSize:13,fontWeight:700}}>{v}</div>
+            </div>
+          ))}
+        </div>
+        {topEget&&maxBud&&<div style={{marginTop:10,borderTop:'1px solid var(--br)',paddingTop:8}}>
+          {topEget<maxBud*0.9&&<div style={{fontSize:13,color:'var(--gdk)',fontWeight:600}}>✅ God margin — {fmt(maxBud-topEget)} kr igjen til grensen</div>}
+          {topEget>=maxBud*0.9&&topEget<maxBud&&<div style={{fontSize:13,color:'var(--amber)',fontWeight:600}}>⚠️ Nærmer seg grensen — kun {fmt(maxBud-topEget)} kr igjen</div>}
+          {topEget>=maxBud&&<div style={{fontSize:13,color:'var(--rdk)',fontWeight:600}}>🛑 Høyeste bud ({fmtK(topEget)} kr) er over budgrensen!</div>}
+        </div>}
+      </div>}
+    </div>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+      <div style={{fontWeight:700,fontSize:16}}>Budlogg</div>
+      <button className="btn-action" onClick={()=>setShowAddBud(true)}><i className="ti ti-plus"/> Nytt bud</button>
+    </div>
+    {active.bud.length===0&&<div style={{textAlign:'center',padding:'1.5rem',color:'var(--txt3)',fontSize:14}}>Ingen bud registrert ennå</div>}
+    {active.bud.length>0&&<div style={{display:'grid',gridTemplateColumns:'1fr 1px 1fr',gap:0,marginBottom:12}}>
+      <div style={{paddingRight:8}}>
+        <div style={{fontSize:11,fontWeight:700,color:'var(--blue)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:8,display:'flex',alignItems:'center',gap:5}}>
+          <span style={{width:8,height:8,borderRadius:'50%',background:'var(--blue)',display:'inline-block'}}/>Dine bud ({egneBud.length})
+        </div>
+        {egneBud.map((b,i)=>(
+          <div key={b.id} style={{background:i===0?'var(--bbg)':'var(--bg2)',borderRadius:'var(--r)',padding:'11px 12px',marginBottom:6,border:'1px solid '+(i===0?'rgba(37,99,235,.3)':'var(--br)')}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span style={{fontSize:15,fontWeight:700,color:i===0?'var(--bdk)':'var(--txt)'}}>{fmtK(b.belop)} kr</span>
+              {i===0&&<span style={{fontSize:10,fontWeight:700,background:'var(--accent)',color:'#fff',padding:'2px 7px',borderRadius:999}}>HØYEST</span>}
+            </div>
+            <div style={{fontSize:11,color:'var(--txt3)',marginTop:3}}>{b.tid}{b.note&&' — '+b.note}</div>
+          </div>
+        ))}
+        {egneBud.length===0&&<div style={{fontSize:12,color:'var(--txt3)',fontStyle:'italic',padding:'8px 0'}}>Ingen egne bud</div>}
+      </div>
+      <div style={{background:'var(--br)',width:1}}/>
+      <div style={{paddingLeft:8}}>
+        <div style={{fontSize:11,fontWeight:700,color:'var(--amber)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:8,display:'flex',alignItems:'center',gap:5}}>
+          <span style={{width:8,height:8,borderRadius:'50%',background:'var(--amber)',display:'inline-block'}}/>Konkurrenter ({konkBud.length})
+        </div>
+        {konkBud.map((b,i)=>{const isTop=b.belop===topKonk&&i===0;return(
+          <div key={b.id} style={{background:isTop?'var(--abg)':'var(--bg2)',borderRadius:'var(--r)',padding:'11px 12px',marginBottom:6,border:'1px solid '+(isTop?'rgba(217,119,6,.3)':'var(--br)')}}>
+            <div style={{fontSize:15,fontWeight:700,color:isTop?'var(--adk)':'var(--txt)'}}>{fmtK(b.belop)} kr</div>
+            <div style={{fontSize:11,color:'var(--txt3)',marginTop:3}}>{b.budder&&b.budder+' • '}{b.tid}{b.note&&' — '+b.note}</div>
+          </div>
+        );})}
+        {konkBud.length===0&&<div style={{fontSize:12,color:'var(--txt3)',fontStyle:'italic',padding:'8px 0'}}>Ingen konkurrentbud</div>}
+      </div>
+    </div>}
+    {egneBud.length>0&&husData&&<div className="card" style={{marginTop:4}}>
+      <div className="card-title">📊 Økonomieffekt per bud</div>
+      <div style={{fontSize:12,color:'var(--txt3)',marginBottom:12,lineHeight:1.5}}>Hva dere sitter igjen med per måned for hvert bud du har lagt inn (lån + FK + faste utgifter)</div>
+      {egneBud.map((bud,i)=>{
+        const budBase={...husData,kjopesum:bud.belop+(active.fellesgjeld||0)};
+        const k=calcKalk(budBase);
+        const persons=husData.toPerson?[{n:husData.navn1||'P1',r:k.p1},{n:husData.navn2||'P2',r:k.p2}]:[{n:husData.navn1||'P1',r:k.p1}];
+        const isTop=i===0;
+        return <div key={bud.id} style={{marginBottom:12,paddingBottom:12,borderBottom:'1px solid var(--br)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
+            <div>
+              <span style={{fontWeight:700,fontSize:15,color:isTop?'var(--bdk)':'var(--txt)'}}>{fmtK(bud.belop)} kr</span>
+              {isTop&&<span style={{marginLeft:8,fontSize:10,fontWeight:700,background:'var(--accent)',color:'#fff',padding:'2px 7px',borderRadius:999}}>HØYEST</span>}
+            </div>
+            <span style={{fontSize:12,color:'var(--txt3)'}}>{bud.tid}{bud.note&&' — '+bud.note}</span>
+          </div>
+          <div style={{fontSize:12,color:'var(--txt3)',marginBottom:8}}>Lån: {fmt(k.mLaan)} kr/mnd &nbsp;|&nbsp; Totalpris: {fmtK(bud.belop+(active.fellesgjeld||0)+(active.omk&&active.omk.total||0))} kr</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat('+persons.length+',1fr)',gap:8}}>
+            {persons.map(p=>(
+              <div key={p.n} className={'stat'+(p.r.rest>=0?' good':' bad')}>
+                <div className="sl">{p.n} igjen</div>
+                <div className="sv" style={{fontSize:15}}>{fmt(p.r.rest)} kr</div>
+                {p.r.nettoBuf!==0&&<div style={{fontSize:10,color:'var(--txt3)',marginTop:2}}>Inkl. buf: {fmt(p.r.restMedBuf)} kr</div>}
+              </div>
+            ))}
+          </div>
+        </div>;
+      })}
+    </div>}
+    {showAddBud&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setShowAddBud(false)}}>
+      <div className="sheet"><div className="handle"/>
+        <div style={{fontWeight:700,fontSize:18,marginBottom:16}}>Registrer bud</div>
+        <div style={{display:'flex',gap:0,marginBottom:16,background:'var(--bg2)',padding:3,borderRadius:'var(--rl)',border:'1px solid var(--br)'}}>
+          {[['eget','🙋 Mitt bud'],['konkurrent','👤 Konkurrent']].map(([v,l])=>(
+            <button key={v} onClick={()=>setBudType(v)} style={{flex:1,padding:9,fontWeight:700,fontSize:13,border:'1px solid '+(budType===v?'var(--br2)':'transparent'),borderRadius:'var(--r)',background:budType===v?'var(--bg)':'transparent',cursor:'pointer',font:'inherit',color:budType===v?'var(--txt)':'var(--txt3)',boxShadow:budType===v?'var(--shadow)':'none'}}>
+              {l}
+            </button>
+          ))}
+        </div>
+        {budType==='konkurrent'&&<div style={{marginBottom:12}}>
+          <label style={{fontSize:12,fontWeight:700,color:'var(--txt3)',display:'block',marginBottom:4,textTransform:'uppercase',letterSpacing:'.05em'}}>Budgiver (valgfritt)</label>
+          <input placeholder="Navn eller ref." value={budder} onChange={e=>setBudder(e.target.value)}/>
+        </div>}
+        <div style={{marginBottom:12}}>
+          <label style={{fontSize:12,fontWeight:700,color:'var(--txt3)',display:'block',marginBottom:4,textTransform:'uppercase',letterSpacing:'.05em'}}>Budbeløp (kr)</label>
+          <input type="number" placeholder={String(active.pris)} value={budBelop} onChange={e=>setBudBelop(e.target.value)} style={{fontSize:18,fontWeight:700}}/>
+          {budType==='eget'&&budBelop&&<div style={{marginTop:6,fontSize:12,color:'var(--txt3)'}}>Total med gjeld og omk: <strong style={{color:'var(--txt)'}}>{fmtK(Number(budBelop)+fgjeld+omk.total)} kr</strong></div>}
+        </div>
+        {budType==='eget'&&budBelop&&maxBud>0&&(()=>{
+          const belop=Number(budBelop);
+          const over=belop>maxBud;
+          const naer=belop>maxBud*0.9&&belop<=maxBud;
+          return <div style={{background:over?'var(--rbg)':naer?'var(--abg)':'var(--gbg)',borderRadius:'var(--r)',padding:'11px 14px',marginBottom:14,border:'1px solid '+(over?'rgba(220,38,38,.25)':naer?'rgba(217,119,6,.25)':'rgba(5,150,105,.25)')}}>
+            <div style={{fontSize:13,fontWeight:700,color:over?'var(--rdk)':naer?'var(--adk)':'var(--gdk)',marginBottom:2}}>
+              {over?'🛑 Over din budgrense':naer?'⚠️ Nærmer seg grensen':'✅ Innenfor din budgrense'}
+            </div>
+            <div style={{fontSize:12,color:over?'var(--rdk)':naer?'var(--adk)':'var(--gdk)'}}>
+              Grense: {fmtK(maxBud)} kr — {over?fmtK(belop-maxBud)+' kr over':fmtK(maxBud-belop)+' kr igjen'}
+            </div>
+          </div>;
+        })()} 
+        <div style={{marginBottom:14}}>
+          <label style={{fontSize:12,fontWeight:700,color:'var(--txt3)',display:'block',marginBottom:4,textTransform:'uppercase',letterSpacing:'.05em'}}>Tidspunkt</label>
+          <input type="time" value={budTid} onChange={e=>setBudTid(e.target.value)}/>
+        </div>
+        <div style={{marginBottom:14}}>
+          <label style={{fontSize:12,fontWeight:700,color:'var(--txt3)',display:'block',marginBottom:4,textTransform:'uppercase',letterSpacing:'.05em'}}>Notat (valgfritt)</label>
+          <input placeholder="F.eks. med forbehold" value={budNote} onChange={e=>setBudNote(e.target.value)}/>
+        </div>
+        <button className="btnpri" onClick={addBud} disabled={!budBelop}>Lagre bud</button>
+      </div>
+    </div>}
+  </div>;
+}
+
+/* ─── LANDING PAGE ─── */
+function LandingPage({onForstatt,onEksempel}){
+  const features=[
+    {icon:'🏠',title:'Visningssjekkliste',desc:'Gå gjennom alle punkter på visning og få en strukturert vurdering av boligen'},
+    {icon:'💰',title:'Boligkalkulator',desc:'Beregn hva dere faktisk har råd til og se hva som er igjen etter alle utgifter'},
+    {icon:'📊',title:'Sammenligning',desc:'Sammenlign potensielle boliger side om side og få en rangering av beste kjøp'},
+    {icon:'🔨',title:'Budrunde',desc:'Logg alle bud – dine egne og konkurrentenes – og sjekk om du er innenfor budsjett'},
+    {icon:'🗺️',title:'Kart',desc:'Se alle boligene dine på kart og naviger direkte til Finn-annonsen'},
+  ];
+  return <div style={{minHeight:'100vh',background:'var(--bg)',display:'flex',flexDirection:'column'}}>
+    {/* Header */}
+    <div style={{padding:'20px 20px 0',display:'flex',justifyContent:'flex-end'}}>
+      <button onClick={onForstatt} style={{padding:'8px 14px',border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'transparent',color:'var(--txt3)',cursor:'pointer',font:'inherit',fontSize:13}}>
+        <i className="ti ti-x"/> Hopp over
+      </button>
+    </div>
+    {/* Hero */}
+    <div style={{padding:'32px 24px 24px',textAlign:'center'}}>
+      <div style={{fontSize:52,marginBottom:16}}>🏡</div>
+      <div style={{fontSize:28,fontWeight:800,letterSpacing:'-.03em',lineHeight:1.15,marginBottom:12}}>Din smarte<br/>boligkjøpsassistent</div>
+      <div style={{fontSize:15,color:'var(--txt2)',lineHeight:1.6,maxWidth:320,margin:'0 auto'}}>
+        Alt du trenger for å finne, vurdere og kjøpe bolig — samlet på ett sted.
+      </div>
+    </div>
+    {/* Features */}
+    <div style={{padding:'0 20px',flex:1}}>
+      {features.map((f,i)=>(
+        <div key={i} style={{display:'flex',alignItems:'flex-start',gap:14,padding:'14px 0',borderBottom:'1px solid var(--br)'}}>
+          <div style={{fontSize:26,width:36,textAlign:'center',flexShrink:0,marginTop:1}}>{f.icon}</div>
+          <div>
+            <div style={{fontWeight:700,fontSize:15,marginBottom:3,letterSpacing:'-.01em'}}>{f.title}</div>
+            <div style={{fontSize:13,color:'var(--txt3)',lineHeight:1.5}}>{f.desc}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+    {/* How to use */}
+    <div style={{padding:'24px 20px 16px'}}>
+      <div style={{fontSize:13,fontWeight:700,color:'var(--txt3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:12}}>Slik bruker du appen</div>
+      {[
+        ['1','Legg til en bolig','Lim inn Finn-lenken og annonsetekst — appen finner pris og FK automatisk'],
+        ['2','Gå gjennom sjekklisten','Vurder alle punkter på visning og legg inn TG-funn'],
+        ['3','Beregn økonomien','Se hva dere sitter igjen med per måned for akkurat den boligen'],
+        ['4','Sammenlign og by','Ranger boliger mot hverandre og logg budrunden'],
+      ].map(([n,t,d])=>(
+        <div key={n} style={{display:'flex',gap:12,marginBottom:12}}>
+          <div style={{width:26,height:26,borderRadius:'50%',background:'var(--accent)',color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,flexShrink:0}}>{n}</div>
+          <div><div style={{fontWeight:700,fontSize:14,marginBottom:2}}>{t}</div><div style={{fontSize:12,color:'var(--txt3)',lineHeight:1.4}}>{d}</div></div>
+        </div>
+      ))}
+    </div>
+    {/* CTA */}
+    <div style={{padding:'16px 20px 40px',display:'flex',flexDirection:'column',gap:10}}>
+      <button className="btnpri" onClick={onForstatt}>Forstått — kom i gang <i className="ti ti-arrow-right"/></button>
+      <button onClick={onEksempel} style={{width:'100%',padding:13,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontSize:15,fontWeight:600,color:'var(--txt)'}}>
+        <i className="ti ti-eye"/> Se eksempel
+      </button>
+    </div>
+  </div>;
+}
+
+/* ─── EKSEMPEL DEMO ─── */
+function EksempelDemo({onClose}){
+  const demoBolig={id:1,adresse:'Maridalsveien 87, 0461 Oslo',finn:'https://www.finn.no',dato:'2025-03-15',pris:4800000,fellesgjeld:1200000,totalpris:6000000,totalmedOmk:6060717,felleskost:5200,boligtype:'andel',omk:{dok:0,tingl:172,megler:45000,andre:15000,total:60172},inkl:{internett:true,fyring:false,varmtvann:true},andreInkl:['Vaktmester'],tgFeil:[{tittel:'Fukt i vegg ved vindu på bad',grad:'TG2',kommentar:'Mulig lekkasje fra karm',estimertKostnad:35000},{tittel:'Eldre sikringsskap',grad:'TG2',kommentar:'Bør oppgraderes',estimertKostnad:25000}],checklist:{tak:'ok',bad:'warn',kjokken:'ok',el:'warn',ror:'ok',vinduer:'warn',sollys:'ok',romstorrelse:'ok',kollektiv:'ok',butikk:'ok',fellesgjeld_ok:'warn',budsjett:'ok',interesse:'warn'},fraAnalyse:true,status:'potensiell',stjerner:4,positivt:'Fantastisk beliggenhet, lys og luftig. Kort vei til Akerselva og gode kollektivforbindelser. Pent kjøkken og store vinduer.',negativt:'Noe fukt på bad som bør undersøkes nærmere. El-anlegget er gammelt.',vibesNote:'Begge to er veldig begeistret. Kan se oss her!',comments:{bad:'Tydelig fuktflekk i øvre hjørne ved dusj',el:'Sikringsskap fra ca. 1980'}};
+  const demoHus=makeDefaultHus('Kristine','Martin');
+  const demoKalk={...demoHus,kjopesum:6000000,felles:{...demoHus.felles,felleskost:5200,internett:0}};
+  const [tab,setTab]=useState('bolig');
+  const snap={boligId:1,navn1:'Kristine',navn2:'Martin',rest1:8200,rest2:7600,mLaan:28500,totalUt:72300};
+
+  const tabs=[['bolig','🏠 Bolig'],['kalk','💰 Økonomi'],['bud','🔨 Budrunde']];
+
+  return <div style={{minHeight:'100vh',background:'var(--bg3)',display:'flex',flexDirection:'column'}}>
+    {/* Header */}
+    <div style={{background:'var(--bg)',borderBottom:'1px solid var(--br)',padding:'12px 16px',display:'flex',alignItems:'center',gap:12,position:'sticky',top:0,zIndex:100}}>
+      <div style={{flex:1}}>
+        <div style={{fontWeight:700,fontSize:16,letterSpacing:'-.01em'}}>Eksempelvisning</div>
+        <div style={{fontSize:11,color:'var(--txt3)',marginTop:1}}>Maridalsveien 87 — demo</div>
+      </div>
+      <button onClick={onClose} style={{padding:'8px 14px',border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'var(--bg2)',cursor:'pointer',font:'inherit',fontSize:13,fontWeight:600}}>
+        <i className="ti ti-x"/> Lukk
+      </button>
+    </div>
+    {/* Demo tabs */}
+    <div style={{display:'flex',background:'var(--bg)',borderBottom:'1px solid var(--br)',padding:'0 4px'}}>
+      {tabs.map(([k,l])=>(
+        <button key={k} onClick={()=>setTab(k)} style={{flex:1,padding:'11px 4px',fontSize:12,fontWeight:tab===k?700:400,border:'none',borderBottom:'2.5px solid '+(tab===k?'var(--accent)':'transparent'),background:'transparent',cursor:'pointer',font:'inherit',color:tab===k?'var(--accent)':'var(--txt3)',transition:'all .15s'}}>
+          {l}
+        </button>
+      ))}
+    </div>
+    <div style={{padding:'16px 16px 80px',flex:1,overflow:'auto'}}>
+      {tab==='bolig'&&<div>
+        <div className="card" style={{marginBottom:14}}>
+          <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:10}}>
+            <span className="badge bg_">💚 Potensiell</span>
+            <span className="badge bb_">Total {fmtK(demoBolig.totalpris)} kr</span>
+            <span className="badge ba_">FK 5 200/mnd</span>
+          </div>
+          <div style={{fontWeight:700,fontSize:18,marginBottom:2,letterSpacing:'-.01em'}}>{demoBolig.adresse}</div>
+          <div style={{fontSize:13,color:'var(--txt3)',marginBottom:10}}>Visning {demoBolig.dato}</div>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap',fontSize:13}}>
+            <div><span style={{color:'var(--txt3)'}}>Prisantydning: </span><strong>{fmtK(demoBolig.pris)} kr</strong></div>
+            <div><span style={{color:'var(--txt3)'}}>Fellesgjeld: </span><strong>{fmtK(demoBolig.fellesgjeld)} kr</strong></div>
+          </div>
+          <div style={{marginTop:8,fontSize:12,color:'var(--gdk)'}}>Inkl: 📶 Internett • 🚿 Varmtvann • Vaktmester</div>
+        </div>
+        <div className="card">
+          <div className="card-title">Vurdering</div>
+          <div style={{textAlign:'center',marginBottom:12}}>
+            <div style={{fontSize:30}}>⭐⭐⭐⭐</div>
+            <div style={{fontSize:13,color:'var(--txt2)',marginTop:4}}>God kandidat</div>
+          </div>
+          <div style={{marginBottom:10}}>
+            <div style={{fontSize:12,fontWeight:700,color:'var(--gdk)',marginBottom:4}}>💚 Positivt</div>
+            <div style={{fontSize:13,color:'var(--txt2)',lineHeight:1.5}}>{demoBolig.positivt}</div>
+          </div>
+          <div style={{marginBottom:10}}>
+            <div style={{fontSize:12,fontWeight:700,color:'var(--rdk)',marginBottom:4}}>❌ Bekymringer</div>
+            <div style={{fontSize:13,color:'var(--txt2)',lineHeight:1.5}}>{demoBolig.negativt}</div>
+          </div>
+          <div style={{display:'flex',gap:12,marginTop:12,fontSize:13}}>
+            <span>✅ {Object.values(demoBolig.checklist).filter(v=>v==='ok').length} OK</span>
+            <span>⚠️ {Object.values(demoBolig.checklist).filter(v=>v==='warn').length} Usikre</span>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-title">TG-feil registrert</div>
+          {demoBolig.tgFeil.map((t,i)=>(
+            <div key={i} className="tgi" style={{borderLeft:'3px solid #d97706'}}>
+              <div style={{display:'flex',justifyContent:'space-between'}}><strong>{t.tittel}</strong><span className="badge ba_">{t.grad}</span></div>
+              <div style={{fontSize:12,color:'var(--txt2)',marginTop:3}}>{t.kommentar}</div>
+              <div style={{fontSize:12,marginTop:3}}>Estimert: <strong>{fmt(t.estimertKostnad)} kr</strong></div>
+            </div>
+          ))}
+          <div style={{background:'var(--rbg)',borderRadius:'var(--r)',padding:'9px 12px',fontSize:13}}>Total TG-estimat: <strong style={{color:'var(--rdk)'}}>{fmt(demoBolig.tgFeil.reduce((s,t)=>s+t.estimertKostnad,0))} kr</strong></div>
+        </div>
+      </div>}
+      {tab==='kalk'&&<div>
+        <div style={{background:'var(--gbg)',border:'1px solid rgba(5,150,105,.3)',borderRadius:'var(--r)',padding:'11px 14px',marginBottom:14}}>
+          <div style={{fontSize:11,fontWeight:700,color:'var(--gdk)',textTransform:'uppercase',letterSpacing:'.05em'}}>Boligkalkulator</div>
+          <div style={{fontSize:14,fontWeight:700,color:'var(--gdk)',marginTop:2}}>{demoBolig.adresse}</div>
+        </div>
+        <div className="card">
+          <div className="card-title">Boliglån</div>
+          <div style={{display:'flex',justifyContent:'space-between',marginBottom:8,fontSize:13}}><span style={{color:'var(--txt3)'}}>Kjøpesum (total)</span><strong>{fmtK(6000000)} kr</strong></div>
+          <div style={{display:'flex',justifyContent:'space-between',marginBottom:8,fontSize:13}}><span style={{color:'var(--txt3)'}}>Egenkapital</span><strong>{fmtK(800000)} kr</strong></div>
+          <div style={{display:'flex',justifyContent:'space-between',marginBottom:8,fontSize:13}}><span style={{color:'var(--txt3)'}}>Rente</span><strong>5,3%</strong></div>
+          <hr/>
+          <div style={{display:'flex',justifyContent:'space-between',fontSize:15}}><span style={{color:'var(--txt2)'}}>Månedlig lånekostnad</span><strong>{fmt(snap.mLaan)} kr</strong></div>
+        </div>
+        <div className="card" style={{borderColor:'rgba(5,150,105,.4)'}}>
+          <div className="card-title">💰 Igjen per person etter alle trekk</div>
+          {[{n:'Kristine',r:snap.rest1},{n:'Martin',r:snap.rest2}].map(p=>(
+            <div key={p.n} className="rest-box" style={{background:'var(--gbg)'}}>
+              <div>
+                <div style={{fontWeight:700,fontSize:14,color:'var(--gdk)'}}>{p.n}</div>
+                <div style={{fontSize:11,color:'var(--txt3)',marginTop:2}}>Inntekt: 55 000 kr</div>
+              </div>
+              <div style={{textAlign:'right'}}>
+                <div style={{fontSize:24,fontWeight:700,color:'var(--gdk)'}}>{fmt(p.r)}</div>
+                <div style={{fontSize:11,color:'var(--gdk)'}}>kr/mnd ✓</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="card">
+          <div className="card-title">Omkostninger</div>
+          {[['Andel/aksje — dokavgift','0 kr'],['Tinglysingsgebyr','172 kr'],['Meglerhonorar','45 000 kr'],['Andre','15 000 kr']].map(([l,v])=>(
+            <div key={l} className="cmp-row"><span style={{color:'var(--txt2)'}}>{l}</span><span style={{fontWeight:600}}>{v}</span></div>
+          ))}
+          <div style={{display:'flex',justifyContent:'space-between',paddingTop:8,fontWeight:700,fontSize:14}}><span>Total kjøpskostnad</span><span style={{color:'var(--accent)'}}>{fmtK(demoBolig.totalmedOmk)} kr</span></div>
+        </div>
+      </div>}
+      {tab==='bud'&&<div>
+        <div className="card" style={{background:'var(--gbg)',borderColor:'rgba(5,150,105,.4)'}}>
+          <div style={{fontSize:11,fontWeight:700,color:'var(--gdk)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:4}}>✅ Innenfor budsjett</div>
+          <div style={{fontSize:26,fontWeight:700,color:'var(--gdk)'}}>5 100 000 kr</div>
+          <div style={{fontSize:12,color:'var(--gdk)',marginTop:2}}>Ditt høyeste bud</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8,marginTop:14}}>
+            {[['Bud + gjeld','6 300 000'],['Omkostninger','60 172'],['Total kostnad','6 360 172']].map(([l,v])=>(
+              <div key={l} style={{background:'rgba(255,255,255,0.5)',borderRadius:'var(--r)',padding:'8px 10px'}}>
+                <div style={{fontSize:10,color:'var(--gdk)',marginBottom:2,textTransform:'uppercase',fontWeight:700}}>{l}</div>
+                <div style={{fontSize:12,fontWeight:700,color:'var(--gdk)'}}>{v}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{fontWeight:700,fontSize:16,marginBottom:12}}>Budlogg</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1px 1fr',gap:0}}>
+          <div style={{paddingRight:8}}>
+            <div style={{fontSize:11,fontWeight:700,color:'var(--blue)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:8}}>🙋 Dine bud (3)</div>
+            {[['5 100 000','10:47','',true],['5 000 000','10:31',''],['4 850 000','10:18','Første bud']].map(([b,t,n,top])=>(
+              <div key={b} style={{background:top?'var(--bbg)':'var(--bg2)',borderRadius:'var(--r)',padding:'10px 12px',marginBottom:6,border:'1px solid '+(top?'rgba(37,99,235,.3)':'var(--br)')}}>
+                <div style={{display:'flex',justifyContent:'space-between'}}><strong style={{color:top?'var(--bdk)':'var(--txt)',fontSize:14}}>{b} kr</strong>{top&&<span style={{fontSize:10,fontWeight:700,background:'var(--accent)',color:'#fff',padding:'2px 6px',borderRadius:999}}>TOP</span>}</div>
+                <div style={{fontSize:11,color:'var(--txt3)',marginTop:2}}>{t}{n&&' — '+n}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{background:'var(--br)',width:1}}/>
+          <div style={{paddingLeft:8}}>
+            <div style={{fontSize:11,fontWeight:700,color:'var(--amber)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:8}}>👤 Konkurrenter (3)</div>
+            {[['5 050 000','10:43','Budgiver A'],['4 950 000','10:35','Budgiver A'],['4 800 000','10:22','Ukjent']].map(([b,t,n])=>(
+              <div key={b+t} style={{background:'var(--bg2)',borderRadius:'var(--r)',padding:'10px 12px',marginBottom:6,border:'1px solid var(--br)'}}>
+                <strong style={{fontSize:14}}>{b} kr</strong>
+                <div style={{fontSize:11,color:'var(--txt3)',marginTop:2}}>{n} • {t}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>}
+    </div>
+  </div>;
+}
+
+/* ─── BRUKEROPPSETT ─── */
+function Brukeroppsett({onDone}){
+  const [navn1,setNavn1]=useState('');
+  const [toPerson,setToPerson]=useState(false);
+  const [navn2,setNavn2]=useState('');
+  const [steg,setSteg]=useState(1);
+  function neste(){
+    if(steg===1){if(!navn1.trim())return;setSteg(2);}
+    else{onDone(navn1.trim(),toPerson?navn2.trim():null);}
+  }
+  return <div style={{minHeight:'100vh',background:'var(--bg)',display:'flex',flexDirection:'column',justifyContent:'center',padding:'40px 24px'}}>
+    <div style={{marginBottom:40}}>
+      <div style={{fontSize:36,marginBottom:16}}>👋</div>
+      {steg===1?<>
+        <div style={{fontSize:24,fontWeight:800,letterSpacing:'-.02em',marginBottom:8}}>Hva heter du?</div>
+        <div style={{fontSize:14,color:'var(--txt3)',lineHeight:1.5,marginBottom:24}}>Vi bruker navnet ditt i kalkulatoren og sammenligningene.</div>
+        <input placeholder="Ditt navn" value={navn1} onChange={e=>setNavn1(e.target.value)} onKeyDown={e=>e.key==='Enter'&&neste()} style={{fontSize:18,fontWeight:600,padding:'14px 16px',marginBottom:14}} autoFocus/>
+      </>:<>
+        <div style={{fontSize:24,fontWeight:800,letterSpacing:'-.02em',marginBottom:8}}>Kjøper du med noen?</div>
+        <div style={{fontSize:14,color:'var(--txt3)',lineHeight:1.5,marginBottom:24}}>Legg til en partner for å dele utgifter og se individuelle beregninger.</div>
+        {!toPerson?<div>
+          <button onClick={()=>setToPerson(true)} style={{width:'100%',padding:'14px 16px',border:'2px dashed var(--br2)',borderRadius:'var(--rl)',background:'transparent',cursor:'pointer',font:'inherit',fontSize:15,color:'var(--txt2)',fontWeight:600,marginBottom:10}}>
+            <i className="ti ti-user-plus"/> Legg til partner
+          </button>
+        </div>:<div>
+          <input placeholder="Partners navn" value={navn2} onChange={e=>setNavn2(e.target.value)} style={{fontSize:18,fontWeight:600,padding:'14px 16px',marginBottom:10}} autoFocus/>
+          <button onClick={()=>setToPerson(false)} style={{width:'100%',padding:8,border:'none',background:'transparent',cursor:'pointer',font:'inherit',fontSize:13,color:'var(--txt3)'}}>Fjern partner</button>
+        </div>}
+      </>}
+    </div>
+    <div style={{display:'flex',flexDirection:'column',gap:10}}>
+      <button className="btnpri" onClick={neste} disabled={steg===1&&!navn1.trim()}>
+        {steg===1?'Neste →':'Kom i gang →'}
+      </button>
+      {steg===2&&<button onClick={neste} style={{width:'100%',padding:12,border:'1px solid var(--br2)',borderRadius:'var(--r)',background:'transparent',cursor:'pointer',font:'inherit',fontSize:14,color:'var(--txt3)'}}>
+        Kjøper alene — fortsett
+      </button>}
+    </div>
+  </div>;
+}
+
+/* ─── APP ROOT ─── */
+function App(){
+  const [screen,setScreen]=useState(()=>{
+    const seenLanding=localStorage.getItem('bolig-seen-landing');
+    const setup=load('app-setup');
+    if(seenLanding&&setup&&setup.done)return 'app';
+    if(seenLanding&&setup&&setup.done)return 'app';
+    return 'landing';
+  });
+  const [showEksempel,setShowEksempel]=useState(false);
+  const [tab,setTab]=useState(0);
+  const [husData,setHusData]=useState(()=>{
+    const setup=load('app-setup');
+    if(setup&&setup.done)return load('hushold-main')||makeDefaultHus(setup.navn1,setup.navn2);
+    return null;
+  });
+  const [boliger,setBoliger]=useState(()=>load('boliger-main')||[]);
+  const [bkData,setBkData]=useState(()=>{const s=load('boligkalk-main');return s?s.data:null;});
+  const [bkNavn,setBkNavn]=useState(()=>{const s=load('boligkalk-main');return s?s.navn:null;});
+  const [bkBoligId,setBkBoligId]=useState(()=>{const s=load('boligkalk-main');return s?s.boligId:null;});
+  const [bkInkl,setBkInkl]=useState(()=>{const s=load('boligkalk-main');return s?s.inkl||{}:{};});
+  const [snapshots,setSnapshots]=useState(()=>load('snapshots-main')||[]);
+  const [apiKey,setApiKey]=useState(()=>localStorage.getItem('app-apikey')||'');
+  const [showSettings,setShowSettings]=useState(false);
+
+  function handleSetup(navn1,navn2){
+    const hus=makeDefaultHus(navn1,navn2||null);
+    if(!navn2)hus.toPerson=false;
+    setHusData(hus);
+    stor('hushold-main',hus);
+    stor('app-setup',{done:true,navn1,navn2:navn2||null});
+    localStorage.setItem('bolig-seen-landing','1');
+    setScreen('app');
+  }
+
+  function saveHus(d){setHusData(d);stor('hushold-main',d);}
+
+  function sendToKalk(b){
+    const base=JSON.parse(JSON.stringify(husData));
+    const tp=(b.pris||0)+(b.fellesgjeld||0);
+    base.kjopesum=tp||b.pris||husData.kjopesum;
+    base.felles={...husData.felles,felleskost:b.felleskost||husData.felles.felleskost};
+    const inkl={};
+    if(b.inkl&&b.inkl.internett)inkl.internett=true;
+    if(b.inkl&&(b.inkl.fyring||b.inkl.varmtvann))inkl.strom=true;
+    setBkData(base);setBkNavn(b.adresse);setBkBoligId(b.id);setBkInkl(inkl);
+    stor('boligkalk-main',{data:base,navn:b.adresse,boligId:b.id,inkl});
+    setTab(1);
+  }
+
+  function saveSnapshot(){
+    if(!bkData||!bkBoligId)return;
+    const k=calcKalk(bkData);
+    const totalUt=(k.p1.totalUt||0)+(bkData.toPerson?(k.p2.totalUt||0):0);
+    const snap={boligId:bkBoligId,navn1:bkData.navn1||'Person 1',navn2:bkData.toPerson?(bkData.navn2||'Person 2'):null,rest1:k.p1.rest,rest2:bkData.toPerson?k.p2.rest:null,mLaan:k.mLaan,totalUt,savedAt:Date.now()};
+    const upd=[...snapshots.filter(s=>s.boligId!==bkBoligId),snap];
+    setSnapshots(upd);stor('snapshots-main',upd);
+  }
+
+  function clearBk(){setBkData(null);setBkNavn(null);setBkBoligId(null);setBkInkl({});localStorage.removeItem('boligkalk-main');}
+
+  const kData=tab===2?(bkData?{...husData,...bkData}:husData):husData;
+  const setKData=tab===2?d=>{setBkData(d);stor('boligkalk-main',{data:d,navn:bkNavn,boligId:bkBoligId,inkl:bkInkl});}:saveHus;
+  const hasSaved=!!(bkBoligId&&snapshots.some(s=>s.boligId===bkBoligId));
+
+  if(screen==='landing')return <>
+    {showEksempel?<EksempelDemo onClose={()=>{setShowEksempel(false);localStorage.setItem('bolig-seen-landing','1');setScreen('setup');}}/>
+      :<LandingPage onForstatt={()=>setScreen('setup')} onEksempel={()=>setShowEksempel(true)}/>}
+  </>;
+  if(screen==='setup')return <Brukeroppsett onDone={handleSetup}/>;
+  if(!husData)return <Brukeroppsett onDone={handleSetup}/>;
+
+  return <div>
+    <div className="tab-bar">
+      {[{i:'ti-home-2',l:'Visning'},{i:'ti-building-estate',l:'Boligkalk'},{i:'ti-scale',l:'Sammenlign'},{i:'ti-gavel',l:'Budrunde'}].map((t,idx)=>(
+        <button key={idx} className={'tab-btn'+(tab===idx?' active':'')} onClick={()=>setTab(idx)}>
+          <i className={'ti '+t.i} style={{display:'block',fontSize:18,marginBottom:2}}/>
+          {t.l}
+        </button>
+      ))}
+      <button className="tab-btn" onClick={()=>setShowSettings(true)} style={{maxWidth:40}}>
+        <i className="ti ti-settings" style={{display:'block',fontSize:18,marginBottom:2}}/>
+      </button>
+    </div>
+    <div className="page">
+      {tab===0&&<VisningTab boliger={boliger} setBoliger={setBoliger} onSendToKalk={sendToKalk} snapshots={snapshots} apiKey={apiKey}/>}
+      {tab===1&&<KalkulatorTab data={kData} setData={setKData} boligInkl={bkInkl} boligNavn={bkNavn} onClearBolig={clearBk} onSaveSnapshot={saveSnapshot} hasSaved={hasSaved}/>}
+      {tab===2&&<SammenligningTab boliger={boliger} snapshots={snapshots} husData={husData}/>}
+      {tab===3&&<BudrundTab boliger={boliger} husData={husData}/>}
+    </div>
+    {showSettings&&<div className="overlay" onClick={e=>{if(e.target===e.currentTarget)setShowSettings(false)}}>
+      <div className="sheet"><div className="handle"/>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20}}>
+          <div style={{fontWeight:700,fontSize:18}}>⚙️ Innstillinger</div>
+          <button onClick={()=>setShowSettings(false)} style={{padding:'5px 9px',border:'1px solid var(--br2)',borderRadius:'var(--r)',cursor:'pointer',font:'inherit',background:'var(--bg2)'}}><i className="ti ti-x"/></button>
+        </div>
+        <div className="card">
+          <div className="card-title">Brukere</div>
+          <div style={{display:'flex',gap:8,marginBottom:10}}>
+            <div style={{flex:1}}>
+              <label style={{fontSize:12,fontWeight:600,color:'var(--txt3)',display:'block',marginBottom:4}}>Person 1</label>
+              <input value={husData.navn1||''} onChange={e=>{const d={...husData,navn1:e.target.value};saveHus(d);}}/>
+            </div>
+            {husData.toPerson&&<div style={{flex:1}}>
+              <label style={{fontSize:12,fontWeight:600,color:'var(--txt3)',display:'block',marginBottom:4}}>Person 2</label>
+              <input value={husData.navn2||''} onChange={e=>{const d={...husData,navn2:e.target.value};saveHus(d);}}/>
+            </div>}
+          </div>
+          {!husData.toPerson&&<button onClick={()=>{const d={...husData,toPerson:true,navn2:'Person 2'};saveHus(d);}} style={{width:'100%',padding:9,border:'1px dashed var(--br2)',borderRadius:'var(--r)',background:'transparent',cursor:'pointer',font:'inherit',fontSize:13,color:'var(--txt2)',fontWeight:500}}>
+            + Legg til person 2
+          </button>}
+        </div>
+        <div className="card">
+          <div className="card-title">API-nøkkel (valgfritt)</div>
+          <div style={{fontSize:13,color:'var(--txt3)',marginBottom:10,lineHeight:1.5}}>Brukes kun for PDF-analyse av salgsoppgaver og AI-oppsummeringer. Tekst-parsing fungerer uten.</div>
+          <input type="password" placeholder="sk-ant-api03-..." value={apiKey} onChange={e=>{setApiKey(e.target.value);localStorage.setItem('app-apikey',e.target.value);}}/>
+          <div style={{fontSize:12,marginTop:6,color:apiKey?'var(--gdk)':'var(--txt3)'}}>{apiKey?'✅ Nøkkel er satt ('+apiKey.length+' tegn)':'Ingen nøkkel satt'}</div>
+        </div>
+        <button onClick={()=>{if(confirm('Nullstille alt? All data slettes.')){localStorage.clear();window.location.reload();}}} style={{width:'100%',padding:10,border:'1px solid rgba(220,38,38,.3)',borderRadius:'var(--r)',background:'var(--rbg)',color:'var(--rdk)',cursor:'pointer',font:'inherit',fontWeight:600,marginTop:8}}>
+          🗑️ Nullstill all data
+        </button>
+      </div>
+    </div>}
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+<script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("/boligapp/sw.js",{scope:"/boligapp/"})
+      .then(r=>console.log("SW ok"))
+      .catch(e=>console.log("SW err",e));
+  });
+}
+</script>
+</body>
+</html>

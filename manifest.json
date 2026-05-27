@@ -1,0 +1,26 @@
+{
+  "name": "Boligappen",
+  "short_name": "Boligappen",
+  "description": "Din smarte boligkjøpsassistent",
+  "start_url": "/boligapp/index.html",
+  "scope": "/boligapp/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1d4ed8",
+  "theme_color": "#1d4ed8",
+  "lang": "nb",
+  "icons": [
+    {
+      "src": "/boligapp/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/boligapp/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
